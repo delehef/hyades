@@ -64,8 +64,7 @@ defmodule HyadesWeb.UserController do
                           code: code, state: state, redirect_uri: Routes.user_url(conn, :github_back)]]
       with {:ok, %HTTPoison.Response{status_code: 200, body: body}} <- HTTPoison.post(github_token_url, "", headers, options),
            {:ok, %{"access_token" => token}} <- Jason.decode(body),
-           {:ok, new_user} <- Users.validate_github(user, token),
-        do
+           {:ok, new_user} <- Users.validate_github(user, token) do
         Hyades.Users.send_new_newsletter(user, token)
         conn
         |> sync_user(new_user)
