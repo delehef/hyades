@@ -101,6 +101,8 @@ defmodule Hyades.Users do
          {:ok, subscriptions_trial} <- Stripe.Subscription.list(%{customer: user.customer_id, status: "trialing"}) do
       !(Enum.empty?(subscriptions_active.data) && Enum.empty?(subscriptions_trial.data))
     else
+      e ->
+        Logger.error "#{user.email} does not appear to be subscribed anymore"
       false
     end
   end
