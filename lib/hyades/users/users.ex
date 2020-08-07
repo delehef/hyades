@@ -49,8 +49,9 @@ defmodule Hyades.Users do
   end
 
   def send_newsletter(user) do
-    with {:ok, subscriptions} <- Stripe.Subscription.list(%{customer: user.customer_id, status: "active"}),
-         false <- Enum.empty? subscriptions.data do
+    with {:ok, subscriptions_active} <- Stripe.Subscription.list(%{customer: user.customer_id, status: "active"}),
+         {:ok, subscriptions_trial} <- Stripe.Subscription.list(%{customer: user.customer_id, status: "trialing"}),
+         false <- Enum.empty?(subscriptions_active.data) && Enum.empty?(subscriptions_trial.data) do
       email = user.email
       settings = %{show_issues: user.show_issues, show_issues_body: user.show_issues_body,
                    show_releases: user.show_releases, show_releases_body: user.show_releases_body,
@@ -58,6 +59,9 @@ defmodule Hyades.Users do
       Hyades.Github.Client.REST.get(user.github_token, settings)
       |> Hyades.Github.Email.newsletter(email)
       |> Hyades.Github.Mailer.deliver_now()
+    else
+    e ->
+      Logger.error "in send_newsletter to #{user.email}: #{inspect e, pretty: true}"
     end
   end
 
