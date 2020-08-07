@@ -49,34 +49,33 @@ defmodule Hyades.Users do
   end
 
   def send_newsletter(user) do
-    with {:ok, subscriptions_active} <- Stripe.Subscription.list(%{customer: user.customer_id, status: "active"}),
-         {:ok, subscriptions_trial} <- Stripe.Subscription.list(%{customer: user.customer_id, status: "trialing"}),
-         false <- Enum.empty?(subscriptions_active.data) && Enum.empty?(subscriptions_trial.data) do
-      email = user.email
-      settings = %{show_issues: user.show_issues, show_issues_body: user.show_issues_body,
-                   show_releases: user.show_releases, show_releases_body: user.show_releases_body,
-                   show_commits: user.show_commits}
-      Hyades.Github.Client.REST.get(user.github_token, settings)
-      |> Hyades.Github.Email.newsletter(email)
-      |> Hyades.Github.Mailer.deliver_now()
-    else
-    e ->
-      Logger.error "in send_newsletter to #{user.email}: #{inspect e, pretty: true}"
+    case check_subscription(user) do
+      true ->
+        email = user.email
+        settings = %{show_issues: user.show_issues, show_issues_body: user.show_issues_body,
+                     show_releases: user.show_releases, show_releases_body: user.show_releases_body,
+                     show_commits: user.show_commits}
+        Hyades.Github.Client.REST.get(user.github_token, settings)
+        |> Hyades.Github.Email.newsletter(email)
+        |> Hyades.Github.Mailer.deliver_now()
+      e ->
+        Logger.error "in send_newsletter to #{user.email}: #{inspect e, pretty: true}"
     end
   end
 
   def send_new_newsletter(user, token) do
-    with {:ok, subscriptions} <- Stripe.Subscription.list(%{customer: user.customer_id, status: "active"}),
-         false <- Enum.empty? subscriptions.data do
-      Task.async(fn ->
-        settings = %{show_issues: user.show_issues, show_issues_body: user.show_issues_body,
-                     show_releases: user.show_releases, show_releases_body: user.show_releases_body,
-                     show_commits: user.show_commits}
-        Hyades.Github.Client.REST.get(token, settings)
-        |> Hyades.Github.Email.newsletter(user.email)
-        |> Hyades.Github.Mailer.deliver_now()
-      end)
-      {:ok, "sent"}
+    case check_subscription(user) do
+      true ->
+        Task.async(fn ->
+          settings = %{show_issues: user.show_issues, show_issues_body: user.show_issues_body,
+                       show_releases: user.show_releases, show_releases_body: user.show_releases_body,
+                       show_commits: user.show_commits}
+          Hyades.Github.Client.REST.get(token, settings)
+          |> Hyades.Github.Email.newsletter(user.email)
+          |> Hyades.Github.Mailer.deliver_now()
+        end)
+        {:ok, "sent"}
+      _ ->
     end
   end
 
@@ -94,5 +93,15 @@ defmodule Hyades.Users do
         Logger.error "#{user.email} has no github token; skipping"
       end
     end)
+  end
+
+
+  def check_subscription(user) do
+    with {:ok, subscriptions_active} <- Stripe.Subscription.list(%{customer: user.customer_id, status: "active"}),
+         {:ok, subscriptions_trial} <- Stripe.Subscription.list(%{customer: user.customer_id, status: "trialing"}) do
+      !(Enum.empty?(subscriptions_active.data) && Enum.empty?(subscriptions_trial.data))
+    else
+      false
+    end
   end
 end

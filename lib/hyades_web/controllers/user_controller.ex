@@ -31,7 +31,7 @@ defmodule HyadesWeb.UserController do
         redirect(conn, to: Routes.user_path(conn, :stripe_register))
       user && user.stripe_done && !user.github_done ->
         redirect(conn, to: Routes.user_path(conn, :github_register))
-      user && user.stripe_done && user.github_done->
+      user && user.stripe_done && user.github_done ->
         redirect(conn, to: Routes.pow_registration_path(conn, :edit))
       true ->
         redirect(conn, to: Routes.page_path(conn, :index))
@@ -55,7 +55,7 @@ defmodule HyadesWeb.UserController do
     user = current_user(conn)
     state = user |> make_state
 
-    unless state != gh_state do
+    if state == gh_state do
       github_token_url = "https://github.com/login/oauth/access_token"
       headers = ["Accept": "application/json"]
       options = [params: [client_id: Application.get_env(:hyades, :github_client_id),
@@ -151,33 +151,33 @@ defmodule HyadesWeb.UserController do
 
   def delete(conn, _params) do
     user = current_user(conn)
-    with {:ok, _} <- Hyades.Users.kill_user(conn, user) do
-      conn
-      |> Pow.Plug.delete
-      |> put_flash(:info, "Your subscription has been succesfully cancelled")
-      |> redirect(to: Routes.page_path(conn, :index))
-    else
+    case Hyades.Users.kill_user(conn, user) do
+      {:ok, _} ->
+        conn
+        |> Pow.Plug.delete
+        |> put_flash(:info, "Your subscription has been succesfully cancelled")
+        |> redirect(to: Routes.page_path(conn, :index))
       e ->
         Logger.error "while removing #{user.email}: #{inspect e, pretty: true}"
-      conn
-      |> put_flash(:error, "An error occured while deleting your account; please contact the support")
-      |> redirect(to: Routes.page_path(conn, :index))
+        conn
+        |> put_flash(:error, "An error occured while deleting your account; please contact the support")
+        |> redirect(to: Routes.page_path(conn, :index))
     end
   end
 
   def last_newsletter(conn, _params) do
     user = current_user(conn)
-    with {:ok, subscriptions} <- Stripe.Subscription.list(%{customer: user.customer_id, status: "active"}) do
-      Task.async(fn -> Hyades.Users.send_newsletter(user) end)
-      conn
-      |> put_flash(:info, "You should soon receive your newsletter")
-      |> redirect(to: Routes.page_path(conn, :index))
-    else
+    case Users.check_subscription(user) do
+      true ->
+        Task.async(fn -> Hyades.Users.send_newsletter(user) end)
+        conn
+        |> put_flash(:info, "You should soon receive your newsletter")
+        |> redirect(to: Routes.page_path(conn, :index))
       e ->
         Logger.error "while sending a newsletter to #{user.email}: #{inspect e, pretty: true}"
-      conn
-      |> put_flash(:error, "It looks like your subscription is not valid anymore.")
-      |> redirect(to: Routes.page_path(conn, :index))
+        conn
+        |> put_flash(:error, "It looks like your subscription is not valid anymore.")
+        |> redirect(to: Routes.page_path(conn, :index))
     end
   end
 end
