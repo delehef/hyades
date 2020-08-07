@@ -46,7 +46,6 @@ defmodule HyadesWeb.UserController do
     user = current_user(conn)
     client_id = Application.get_env(:hyades, :github_client_id)
     redirect_uri = Routes.user_url(conn, :github_back)
-    IO.puts redirect_uri
     state = user |> make_state
     github_url = "https://github.com/login/oauth/authorize?client_id=#{client_id}&redirect_uri=#{redirect_uri}&state=#{state}"
     redirect(conn, external: github_url)
