@@ -46,7 +46,7 @@ config :hyades, :pow,
 config :hyades, Hyades.Cron,
   jobs: [
     newsletter: [
-      schedule: "@hourly",
+      schedule: "@weekly",
       task: {Hyades.Users, :send_all_newsletters, []}
     ]
   ]
