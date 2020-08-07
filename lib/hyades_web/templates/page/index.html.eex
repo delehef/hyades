@@ -17,17 +17,7 @@
   </div>
   <img src="<%= Routes.static_path(@conn, "/images/sshot.jpg") %>">
 
-  <div id="prices">
-    <div>
-      <h3>Monthly</h3>
-      <p>€1<sup>80</sup></p>
-    </div>
-    <div>
-      <h3>Yearly</h3>
-      <p>€18<sup>00</sup></p>
-      <p id="save">Save 17%</p>
-    </div>
-  </div>
+  <h2 style="margin-bottom: 2rem; color: #df460f; text-shadow: 0 0 1rem #df460f; transform: rotate(-5deg);">Try it free for a month (4 newsletters)!</h2>
 
 
   <div id="buttons">

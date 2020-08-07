@@ -14,7 +14,7 @@ defmodule HyadesWeb.UserController do
   defp fail(conn, message) do
     user = current_user(conn)
     config = Pow.Plug.fetch_config(conn)
-    if user.customer_id != "", do: Stripe.Customer.delete user.cutomer_id
+    if user.customer_id != "", do: Stripe.Customer.delete user.customer_id
     if Hyades.Repo.get_by(User, id: user.id), do: Pow.Operations.delete(user, config)
     conn
     |> put_flash(:error, "#{message}; your subscription has been cancelled")
@@ -65,8 +65,8 @@ defmodule HyadesWeb.UserController do
       with {:ok, %HTTPoison.Response{status_code: 200, body: body}} <- HTTPoison.post(github_token_url, "", headers, options),
            {:ok, %{"access_token" => token}} <- Jason.decode(body),
            {:ok, new_user} <- Users.validate_github(user, token),
-           {:ok, _} <- Hyades.Users.send_new_newsletter(user, token)
         do
+        Hyades.Users.send_new_newsletter(user, token)
         conn
         |> sync_user(new_user)
         |> put_flash(:info, "Your subscription has been successful. Your first newsletter should soon arrive!")
