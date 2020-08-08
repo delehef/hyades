@@ -93,6 +93,10 @@ defmodule Hyades.Github.Client.REST do
                 url: release["html_url"]}
             end)
           }
+        else
+          e ->
+            Logger.error "while fetching #{repo}: #{inspect e, pretty: true}"
+          %{releases: [], issues: [], commits: []}
         end
       end)
       |> Enum.filter(fn r -> not (Enum.empty?(r.releases) and Enum.empty?(r.issues) and Enum.empty?(r.commits)) end)
