@@ -35,6 +35,7 @@
      span.label {
          padding: 0rem 0.25rem;
          border-radius: 3px;
+         white-space: nowrap;
      }
      pre {
          max-width: 100%;
