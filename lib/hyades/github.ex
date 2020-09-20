@@ -69,7 +69,7 @@ defmodule Hyades.Github.Client.REST do
           else
             []
           end
-          %{name: repo["full_name"],
+          %{name: repo["name"],
             url: repo["html_url"],
             homepage: repo["homepage"],
 
