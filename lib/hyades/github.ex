@@ -48,8 +48,8 @@ defmodule Hyades.Github.Client.REST do
   end
 
   def get(token, settings) do
-    day = 24*3600
-    since = DateTime.utc_now() |> DateTime.add(-7*day, :second) |> DateTime.to_iso8601
+    day = 24 * 3600
+    since = DateTime.utc_now() |> DateTime.add(-7 * day, :second) |> DateTime.to_iso8601
 
     c = Tentacat.Client.new(%{access_token: token})
 
@@ -59,15 +59,15 @@ defmodule Hyades.Github.Client.REST do
         with {200, commits, _} <- get_commits(c, repo, since, settings),
         {200, issues, _} <- get_issues(c, repo, since, settings),
         {200, releases, _} <- get_releases(c, repo, settings) do
-          releases = unless is_nil(releases) do
+          releases = if is_nil(releases) do
+            []
+          else
             Enum.filter(releases, fn release ->
               with {:ok, published, _} <- DateTime.from_iso8601(release["published_at"]),
               {:ok, since, _} <- DateTime.from_iso8601(since) do
                 Date.compare(published, since) == :gt
               end
             end)
-          else
-            []
           end
           %{name: repo["name"],
             url: repo["html_url"],
@@ -118,17 +118,18 @@ defmodule Hyades.Github.Client.GraphQL do
   require Logger
 
   def get(user, token) do
-    with {:ok, %Neuron.Response{body: %{"data" => %{"user" => %{"starredRepositories" => %{"nodes" => repos}}}}, headers: _, status_code: 200}} <- get_repos(user, token) do
-      repo = List.first(repos)
-      repo_details(Integer.to_string(repo["databaseId"]), token)
-    else e -> Logger.error inspect(e, pretty: true)
+    case get_repos(user, token) do
+      {:ok, %Neuron.Response{body: %{"data" => %{"user" => %{"starredRepositories" => %{"nodes" => repos}}}}, headers: _, status_code: 200}} ->
+        repo = List.first(repos)
+        repo_details(Integer.to_string(repo["databaseId"]), token)
+      e -> Logger.error inspect(e, pretty: true)
     end
   end
 
-  defp repo_details(repoID, token) do
+  defp repo_details(repo_id, token) do
     Neuron.Config.set(url: "https://api.github.com/graphql")
     Neuron.Config.set(headers: [authorization: "token #{token}"])
-    query = File.read!("queries/repo.gql") |> String.replace("#id#", repoID)
+    query = File.read!("queries/repo.gql") |> String.replace("#id#", repo_id)
   end
 
   def get_repos(user, token) do
@@ -142,8 +143,8 @@ defmodule Hyades.Github.Client.GraphQL do
     Neuron.Config.set(url: "https://api.github.com/graphql")
     Neuron.Config.set(headers: [authorization: "token #{token}"])
 
-    day = 24*3600
-    since = DateTime.utc_now() |> DateTime.add(-7*day, :second) |> DateTime.to_iso8601
+    day = 24 * 3600
+    since = DateTime.utc_now() |> DateTime.add(-7 * day, :second) |> DateTime.to_iso8601
     query = File.read!("queries/all.gql")
     # |> String.replace("#USER#", "delehef")
     |> String.replace("#SINCE#", since)

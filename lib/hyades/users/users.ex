@@ -49,23 +49,21 @@ defmodule Hyades.Users do
   end
 
   def send_newsletter(user) do
-    case check_subscription(user) do
-      true ->
-        email = user.email
-        settings = %{show_issues: user.show_issues, show_issues_body: user.show_issues_body,
-                     show_releases: user.show_releases, show_releases_body: user.show_releases_body,
-                     show_commits: user.show_commits}
-        Hyades.Github.Client.REST.get(user.github_token, settings)
-        |> Hyades.Github.Email.newsletter(email)
-        |> Hyades.Github.Mailer.deliver_now()
-      e ->
-        Logger.error "in send_newsletter to #{user.email}: #{inspect e, pretty: true}"
+    if check_subscription(user) do
+      email = user.email
+      settings = %{show_issues: user.show_issues, show_issues_body: user.show_issues_body,
+                   show_releases: user.show_releases, show_releases_body: user.show_releases_body,
+                   show_commits: user.show_commits}
+      Hyades.Github.Client.REST.get(user.github_token, settings)
+      |> Hyades.Github.Email.newsletter(email)
+      |> Hyades.Github.Mailer.deliver_now()
+    else
+      Logger.error "#{user.email} does not appear to be subscribed anymore"
     end
   end
 
   def send_new_newsletter(user, token) do
-    case check_subscription(user) do
-      true ->
+    if check_subscription(user) do
         Task.async(fn ->
           settings = %{show_issues: user.show_issues, show_issues_body: user.show_issues_body,
                        show_releases: user.show_releases, show_releases_body: user.show_releases_body,
@@ -75,22 +73,23 @@ defmodule Hyades.Users do
           |> Hyades.Github.Mailer.deliver_now()
         end)
         {:ok, "sent"}
-      _ ->
+    else
+      {:error, "not_subscribed"}
     end
   end
 
   def send_all_newsletters do
     Hyades.Repo.all(Hyades.Users.User)
     |> Enum.each(fn user ->
-      unless user.github_token == "" do
+      if user.github_token == "" do
+        Logger.error "#{user.email} has no github token; skipping"
+      else
         try do
           send_newsletter(user)
         rescue
           e ->
             Logger.error "while sending newsletter to #{user.email}: #{inspect e, pretty: true}"
         end
-      else
-        Logger.error "#{user.email} has no github token; skipping"
       end
     end)
   end
@@ -101,8 +100,6 @@ defmodule Hyades.Users do
          {:ok, subscriptions_trial} <- Stripe.Subscription.list(%{customer: user.customer_id, status: "trialing"}) do
       !(Enum.empty?(subscriptions_active.data) && Enum.empty?(subscriptions_trial.data))
     else
-      e ->
-        Logger.error "#{user.email} does not appear to be subscribed anymore"
       false
     end
   end
