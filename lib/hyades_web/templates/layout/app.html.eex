@@ -25,7 +25,6 @@
           <%= link "Contact", to: Routes.page_path(@conn, :contact) %>
           <%= link "Legal notices", to: Routes.page_path(@conn, :legal_notices) %>
           <%= link "Terms & Conditions", to: Routes.page_path(@conn, :conditions) %>
-          <%= link "Github", to: "https://github.com/delehef/hyades/" %>
         </div>
         <div id="c">© 2020 Hyades, by Delehelle Ingénierie</div>
       </footer>

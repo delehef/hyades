@@ -65,7 +65,7 @@ defmodule Hyades.Users do
 
       Hyades.Github.Client.REST.get(user.github_token, settings)
       |> Hyades.Github.Email.newsletter(email)
-      |> Hyades.Github.Mailer.deliver_now()
+      |> Hyades.Github.Mailer.deliver_now!()
     else
       Logger.error("#{user.email} does not appear to be subscribed anymore")
     end
@@ -84,7 +84,7 @@ defmodule Hyades.Users do
 
         Hyades.Github.Client.REST.get(token, settings)
         |> Hyades.Github.Email.newsletter(user.email)
-        |> Hyades.Github.Mailer.deliver_now()
+        |> Hyades.Github.Mailer.deliver_now!()
       end)
 
       {:ok, "sent"}

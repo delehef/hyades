@@ -4,7 +4,6 @@
   <p id="contact">You have a question? A Suggestion? You encountered a bug? You need information? Feel free to:
     <ul>
       <li>contact us at <a href="mailto:contact@hyades.info">contact@hyades.info</a></li>
-      <li>or open an issue <a href="https://github.com/delehef/hyades/issues">on our Github repository</a>.</li>
     </ul>
   </p>
 </div>
