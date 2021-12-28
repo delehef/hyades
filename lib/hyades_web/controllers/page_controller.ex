@@ -10,6 +10,7 @@ defmodule HyadesWeb.PageController do
       render(conn, "index.html")
     end
   end
+
   def contact(conn, _), do: render(conn, "contact.html")
   def legal_notices(conn, _), do: render(conn, "legal_notices.html")
   def conditions(conn, _), do: render(conn, "conditions.html")

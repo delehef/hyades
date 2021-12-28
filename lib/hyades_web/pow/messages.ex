@@ -14,6 +14,9 @@ defmodule HyadesWeb.Pow.Messages do
   ##
   ## PowResetPassword
   ##
-  def pow_reset_password_email_has_been_sent(_conn), do: "You have been sent an email with a link to reset your password"
-  def pow_reset_password_password_has_been_reset(_conn), do: "Your password has been successfully reset"
+  def pow_reset_password_email_has_been_sent(_conn),
+    do: "You have been sent an email with a link to reset your password"
+
+  def pow_reset_password_password_has_been_reset(_conn),
+    do: "Your password has been successfully reset"
 end

@@ -53,5 +53,4 @@ config :logger, level: :info
 # Finally import the config/prod.secret.exs which loads secrets
 # and configuration from environment variables.
 import_config "prod.secret.exs"
-config :hyades, :pow,
-  cache_store_backend: Pow.Store.Backend.MnesiaCache
+config :hyades, :pow, cache_store_backend: Pow.Store.Backend.MnesiaCache

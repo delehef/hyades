@@ -1,11 +1,17 @@
-use Mix.Config
+import Config
 
 # Configure your database
 config :hyades, Hyades.Repo,
-  username: "hyades_dev",
-  password: "somepassword",
-  database: "hyades_dev",
-  hostname: "localhost",
+  ## For TCP connection
+  # hostname: "localhost",
+  # username: "postgres",
+  # password: "password",
+
+  ## For UNIX socket connection
+  # socket_dir: "/var/run/postgresql",
+  # username: "someone",
+
+  database: "hyades",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
@@ -93,7 +99,6 @@ config :hyades,
 config :hyades, Hyades.Github,
   github_client_id: "",
   github_client_secret: "",
-  app_id: 123123,
-  pem_key: "" # File.read!("github-private-key.pem")
-
-import_config "dev.local.exs"
+  app_id: 123_123,
+  # File.read!("github-private-key.pem")
+  pem_key: ""

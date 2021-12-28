@@ -12,36 +12,39 @@ defmodule Hyades.Users do
     case pow_create(params) do
       {:ok, user} ->
         register_stripe(user)
+
       {:error, e} ->
-        Logger.error "Unable to register #{params["email"]} -- #{inspect e, pretty: true}"
+        Logger.error("Unable to register #{params["email"]} -- #{inspect(e, pretty: true)}")
         {:error, e}
     end
   end
 
   def register_stripe(user) do
     with {:ok, customer} <- Stripe.Customer.create(%{email: user.email, name: user.billing_name}),
-         {:ok, user} <- Ecto.Changeset.change(user, customer_id: customer.id) |> Hyades.Repo.update do
+         {:ok, user} <-
+           Ecto.Changeset.change(user, customer_id: customer.id) |> Hyades.Repo.update() do
       {:ok, user}
     else
       {:error, e} ->
-        Logger.error("unable to register #{}: #{inspect e, pretty: true}")
-      Hyades.Repo.delete(user)
-      {:error, "Unable to create a Stripe customer"}
+        Logger.error("unable to register #{}: #{inspect(e, pretty: true)}")
+        Hyades.Repo.delete(user)
+        {:error, "Unable to create a Stripe customer"}
     end
   end
 
   def validate_stripe(user) do
     Ecto.Changeset.change(user, stripe_done: true)
-    |> Hyades.Repo.update
+    |> Hyades.Repo.update()
   end
 
   def validate_github(user, token) do
     Ecto.Changeset.change(user, %{github_done: true, github_token: token})
-    |> Hyades.Repo.update
+    |> Hyades.Repo.update()
   end
 
   def kill_user(conn, user) do
     config = Pow.Plug.fetch_config(conn)
+
     with {:ok, _} <- Stripe.Customer.delete(user.customer_id),
          {:ok, _} <- Pow.Operations.delete(user, config) do
       {:ok, nil}
@@ -51,28 +54,40 @@ defmodule Hyades.Users do
   def send_newsletter(user) do
     if check_subscription(user) do
       email = user.email
-      settings = %{show_issues: user.show_issues, show_issues_body: user.show_issues_body,
-                   show_releases: user.show_releases, show_releases_body: user.show_releases_body,
-                   show_commits: user.show_commits}
+
+      settings = %{
+        show_issues: user.show_issues,
+        show_issues_body: user.show_issues_body,
+        show_releases: user.show_releases,
+        show_releases_body: user.show_releases_body,
+        show_commits: user.show_commits
+      }
+
       Hyades.Github.Client.REST.get(user.github_token, settings)
       |> Hyades.Github.Email.newsletter(email)
       |> Hyades.Github.Mailer.deliver_now()
     else
-      Logger.error "#{user.email} does not appear to be subscribed anymore"
+      Logger.error("#{user.email} does not appear to be subscribed anymore")
     end
   end
 
   def send_new_newsletter(user, token) do
     if check_subscription(user) do
-        Task.async(fn ->
-          settings = %{show_issues: user.show_issues, show_issues_body: user.show_issues_body,
-                       show_releases: user.show_releases, show_releases_body: user.show_releases_body,
-                       show_commits: user.show_commits}
-          Hyades.Github.Client.REST.get(token, settings)
-          |> Hyades.Github.Email.newsletter(user.email)
-          |> Hyades.Github.Mailer.deliver_now()
-        end)
-        {:ok, "sent"}
+      Task.async(fn ->
+        settings = %{
+          show_issues: user.show_issues,
+          show_issues_body: user.show_issues_body,
+          show_releases: user.show_releases,
+          show_releases_body: user.show_releases_body,
+          show_commits: user.show_commits
+        }
+
+        Hyades.Github.Client.REST.get(token, settings)
+        |> Hyades.Github.Email.newsletter(user.email)
+        |> Hyades.Github.Mailer.deliver_now()
+      end)
+
+      {:ok, "sent"}
     else
       {:error, "not_subscribed"}
     end
@@ -82,25 +97,26 @@ defmodule Hyades.Users do
     Hyades.Repo.all(Hyades.Users.User)
     |> Enum.each(fn user ->
       if user.github_token == "" do
-        Logger.error "#{user.email} has no github token; skipping"
+        Logger.error("#{user.email} has no github token; skipping")
       else
         try do
           send_newsletter(user)
         rescue
           e ->
-            Logger.error "while sending newsletter to #{user.email}: #{inspect e, pretty: true}"
+            Logger.error("while sending newsletter to #{user.email}: #{inspect(e, pretty: true)}")
         end
       end
     end)
   end
 
-
   def check_subscription(user) do
-    with {:ok, subscriptions_active} <- Stripe.Subscription.list(%{customer: user.customer_id, status: "active"}),
-         {:ok, subscriptions_trial} <- Stripe.Subscription.list(%{customer: user.customer_id, status: "trialing"}) do
+    with {:ok, subscriptions_active} <-
+           Stripe.Subscription.list(%{customer: user.customer_id, status: "active"}),
+         {:ok, subscriptions_trial} <-
+           Stripe.Subscription.list(%{customer: user.customer_id, status: "trialing"}) do
       !(Enum.empty?(subscriptions_active.data) && Enum.empty?(subscriptions_trial.data))
     else
-      false
+      _ -> false
     end
   end
 end

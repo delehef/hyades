@@ -54,7 +54,6 @@ defmodule Hyades.MixProject do
       {:tentacat, "~> 2.0"},
       {:earmark, "~> 1.0"},
       {:quantum, "~> 3.0"},
-
       {:credo, "~> 1.4", only: [:dev, :test], runtime: false}
     ]
   end

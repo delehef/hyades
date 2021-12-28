@@ -13,19 +13,24 @@ defmodule Hyades.Github.Email do
   end
 
   def newsletter(repos, to_whom) do
-    Logger.info "Sending newsletter to #{to_whom}"
+    Logger.info("Sending newsletter to #{to_whom}")
+
     base_email()
     |> to(to_whom)
     |> subject("New in your starred repos")
     |> render(:letter, repos: repos)
   end
 end
+
 defmodule Hyades.Github.Client.REST do
   require Logger
 
   defp get_issues(c, repo, since, settings) do
     if settings.show_issues do
-      Tentacat.Issues.filter(c, repo["owner"]["login"], repo["name"], %{since: since, per_page: 100})
+      Tentacat.Issues.filter(c, repo["owner"]["login"], repo["name"], %{
+        since: since,
+        per_page: 100
+      })
     else
       {200, [], nil}
     end
@@ -33,7 +38,10 @@ defmodule Hyades.Github.Client.REST do
 
   defp get_commits(c, repo, since, settings) do
     if settings.show_commits do
-      Tentacat.Commits.filter(c, repo["owner"]["login"], repo["name"], %{since: since, per_page: 100})
+      Tentacat.Commits.filter(c, repo["owner"]["login"], repo["name"], %{
+        since: since,
+        per_page: 100
+      })
     else
       {200, [], nil}
     end
@@ -49,61 +57,77 @@ defmodule Hyades.Github.Client.REST do
 
   def get(token, settings) do
     day = 24 * 3600
-    since = DateTime.utc_now() |> DateTime.add(-7 * day, :second) |> DateTime.to_iso8601
+    since = DateTime.utc_now() |> DateTime.add(-7 * day, :second) |> DateTime.to_iso8601()
 
     c = Tentacat.Client.new(%{access_token: token})
 
-    with {200, starred, _} <- Tentacat.Users.Starring.starred c do
-      starred = Enum.sort_by starred, fn s -> s["name"] end
+    with {200, starred, _} <- Tentacat.Users.Starring.starred(c) do
+      starred = Enum.sort_by(starred, fn s -> s["name"] end)
+
       Enum.map(starred, fn repo ->
         with {200, commits, _} <- get_commits(c, repo, since, settings),
-        {200, issues, _} <- get_issues(c, repo, since, settings),
-        {200, releases, _} <- get_releases(c, repo, settings) do
-          releases = if is_nil(releases) do
-            []
-          else
-            Enum.filter(releases, fn release ->
-              with {:ok, published, _} <- DateTime.from_iso8601(release["published_at"]),
-              {:ok, since, _} <- DateTime.from_iso8601(since) do
-                Date.compare(published, since) == :gt
-              end
-            end)
-          end
-          %{name: repo["name"],
+             {200, issues, _} <- get_issues(c, repo, since, settings),
+             {200, releases, _} <- get_releases(c, repo, settings) do
+          releases =
+            if is_nil(releases) do
+              []
+            else
+              Enum.filter(releases, fn release ->
+                with {:ok, published, _} <- DateTime.from_iso8601(release["published_at"]),
+                     {:ok, since, _} <- DateTime.from_iso8601(since) do
+                  Date.compare(published, since) == :gt
+                end
+              end)
+            end
+
+          %{
+            name: repo["name"],
             url: repo["html_url"],
             homepage: repo["homepage"],
-
-            commits: Enum.map(commits, fn c ->
-              %{message: c["commit"]["message"],
-                url: c["html_url"]}
-            end),
-
-            issues: Enum.map(issues, fn issue ->
-              %{title: issue["title"],
-                url: issue["html_url"],
-                body: (if settings.show_issues_body, do: markdown_to_text(issue["body"]), else: ""),
-                number: issue["number"],
-                labels: Enum.map(issue["labels"], fn l -> %{name: l["name"], color: l["color"]} end)}
-            end),
-
-            releases: (Enum.map releases, fn release ->
-              %{name: release["name"],
-                tag_name: release["tag_name"],
-                body: (if settings.show_releases_body, do: markdown_to_text(release["body"]), else: ""),
-                url: release["html_url"]}
-            end)
+            commits:
+              Enum.map(commits, fn c ->
+                %{message: c["commit"]["message"], url: c["html_url"]}
+              end),
+            issues:
+              Enum.map(issues, fn issue ->
+                %{
+                  title: issue["title"],
+                  url: issue["html_url"],
+                  body:
+                    if(settings.show_issues_body, do: markdown_to_text(issue["body"]), else: ""),
+                  number: issue["number"],
+                  labels:
+                    Enum.map(issue["labels"], fn l -> %{name: l["name"], color: l["color"]} end)
+                }
+              end),
+            releases:
+              Enum.map(releases, fn release ->
+                %{
+                  name: release["name"],
+                  tag_name: release["tag_name"],
+                  body:
+                    if(settings.show_releases_body,
+                      do: markdown_to_text(release["body"]),
+                      else: ""
+                    ),
+                  url: release["html_url"]
+                }
+              end)
           }
         else
           e ->
-            Logger.error "while fetching #{repo}: #{inspect e, pretty: true}"
-          %{releases: [], issues: [], commits: []}
+            Logger.error("while fetching #{repo}: #{inspect(e, pretty: true)}")
+            %{releases: [], issues: [], commits: []}
         end
       end)
-      |> Enum.filter(fn r -> not (Enum.empty?(r.releases) and Enum.empty?(r.issues) and Enum.empty?(r.commits)) end)
+      |> Enum.filter(fn r ->
+        not (Enum.empty?(r.releases) and Enum.empty?(r.issues) and Enum.empty?(r.commits))
+      end)
     end
   end
 
   defp markdown_to_text(text) when is_nil(text), do: ""
+
   defp markdown_to_text(text) do
     case Earmark.as_html(text) do
       {:ok, html, _} -> html
@@ -112,17 +136,22 @@ defmodule Hyades.Github.Client.REST do
   end
 end
 
-
-
 defmodule Hyades.Github.Client.GraphQL do
   require Logger
 
   def get(user, token) do
     case get_repos(user, token) do
-      {:ok, %Neuron.Response{body: %{"data" => %{"user" => %{"starredRepositories" => %{"nodes" => repos}}}}, headers: _, status_code: 200}} ->
+      {:ok,
+       %Neuron.Response{
+         body: %{"data" => %{"user" => %{"starredRepositories" => %{"nodes" => repos}}}},
+         headers: _,
+         status_code: 200
+       }} ->
         repo = List.first(repos)
         repo_details(Integer.to_string(repo["databaseId"]), token)
-      e -> Logger.error inspect(e, pretty: true)
+
+      e ->
+        Logger.error(inspect(e, pretty: true))
     end
   end
 
@@ -144,9 +173,11 @@ defmodule Hyades.Github.Client.GraphQL do
     Neuron.Config.set(headers: [authorization: "token #{token}"])
 
     day = 24 * 3600
-    since = DateTime.utc_now() |> DateTime.add(-7 * day, :second) |> DateTime.to_iso8601
-    query = File.read!("queries/all.gql")
-    # |> String.replace("#USER#", "delehef")
-    |> String.replace("#SINCE#", since)
+    since = DateTime.utc_now() |> DateTime.add(-7 * day, :second) |> DateTime.to_iso8601()
+
+    query =
+      File.read!("queries/all.gql")
+      # |> String.replace("#USER#", "delehef")
+      |> String.replace("#SINCE#", since)
   end
 end
