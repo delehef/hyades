@@ -28,13 +28,13 @@ defmodule HyadesWeb.UserController do
     user = current_user(conn)
 
     cond do
-      user && !user.stripe_done ->
-        redirect(conn, to: Routes.user_path(conn, :stripe_register))
+      # user && !user.github_done ->
+      #   redirect(conn, to: Routes.user_path(conn, :github_register))
 
-      user && user.stripe_done && !user.github_done ->
-        redirect(conn, to: Routes.user_path(conn, :github_register))
+      # user && user.github_done ->
+      #   redirect(conn, to: Routes.pow_registration_path(conn, :edit))
 
-      user && user.stripe_done && user.github_done ->
+      user ->
         redirect(conn, to: Routes.pow_registration_path(conn, :edit))
 
       true ->
@@ -87,7 +87,7 @@ defmodule HyadesWeb.UserController do
         |> sync_user(new_user)
         |> put_flash(
           :info,
-          "Your subscription has been successful. Your first newsletter should soon arrive!"
+          "Your subscription has been successful. Your first newsletter will soon arrive!"
         )
         |> redirect(to: Routes.user_path(conn, :landing))
       else
@@ -104,60 +104,7 @@ defmodule HyadesWeb.UserController do
   ##
   ## Stripe integration
   ##
-  # If the user has already subscribed, just redirect them to their homepage.
-  # Otherwise, make them subscribe.
-  def stripe_register(conn, _params) do
-    render(conn, "plans.html", pk: Application.get_env(:hyades, :stripe_public_key))
-  end
-
-  # AJAX-ed from the subscription page.
-  # Returns the Stripe Session corresponding to the chosen plan.
-  def stripe_plans(conn, %{"type" => type}) do
-    price =
-      case type do
-        "monthly" -> Application.get_env(:hyades, :monthly_price)
-        "yearly" -> Application.get_env(:hyades, :yearly_price)
-      end
-
-    with {:ok, session} <-
-           Stripe.Session.create(%{
-             payment_method_types: ["card"],
-             customer: current_user(conn).customer_id,
-             mode: "subscription",
-             line_items: [%{price: price, quantity: 1}],
-             subscription_data: %{trial_from_plan: true},
-             success_url: Routes.user_url(conn, :stripe_success),
-             cancel_url: Routes.page_url(conn, :index)
-           }) do
-      json(conn, %{id: session.id})
-    end
-  end
-
   defp sync_user(conn, user), do: Pow.Plug.create(conn, user)
-
-  def stripe_success(conn, _params) do
-    user = current_user(conn)
-
-    case Users.validate_stripe(user) do
-      {:ok, new_user} ->
-        conn
-        |> sync_user(new_user)
-        |> redirect(to: Routes.user_path(conn, :landing))
-
-      {:error, e} ->
-        Logger.error("While subscribing #{user.email}: #{inspect(e)}")
-        fail(conn, "An error happened during the payment process")
-    end
-  end
-
-  # Called if the user cancel the subscription in the Stripe popup.
-  # If the user still exists in the database, remove it.
-  # In any case, unlog it, display a flash, then go back home
-  def stripe_cancel(conn, _params) do
-    user = current_user(conn)
-    Logger.warn("#{user.email} has cancelled their payment process")
-    fail(conn, "An error happened during the payment process")
-  end
 
   def billing(conn, _params) do
     user = current_user(conn)

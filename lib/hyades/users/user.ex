@@ -9,12 +9,11 @@ defmodule Hyades.Users.User do
 
   schema "users" do
     pow_user_fields()
-    field(:billing_name, :string, default: "")
+    field(:subscribed, :boolean, default: true)
 
     field(:customer_id, :string, default: "")
     field(:github_token, :string, default: "")
 
-    field(:stripe_done, :boolean, default: false)
     field(:github_done, :boolean, default: false)
 
     field(:show_releases, :boolean, default: true)
@@ -39,9 +38,7 @@ defmodule Hyades.Users.User do
       :show_releases_body,
       :show_issues,
       :show_issues_body,
-      :show_commits,
-      :billing_name
+      :show_commits
     ])
-    |> validate_required(:billing_name)
   end
 end

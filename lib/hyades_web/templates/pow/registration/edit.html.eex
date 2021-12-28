@@ -38,27 +38,27 @@
       <div>
         <h3>Releases</h3>
         <div class="checkbox">
-          <%= label f, :show_releases, "Get information" %>
+          <%= label f, :show_releases, "Show releases" %>
           <%= checkbox f, :show_releases %>
         </div>
         <div class="checkbox">
-          <%= label f, :show_releases_body, "If so, show the details" %>
+          <%= label f, :show_releases_body, "Show releases details" %>
           <%= checkbox f, :show_releases_body %>
         </div>
 
         <h3>Issues</h3>
         <div class="checkbox">
-          <%= label f, :show_issues, "Get information about issues" %>
+          <%= label f, :show_issues, "Show active issues" %>
           <%= checkbox f, :show_issues %>
         </div>
         <div class="checkbox">
-          <%= label f, :show_issues_body, "If so, show the details" %>
+          <%= label f, :show_issues_body, "Show active issue details" %>
           <%= checkbox f, :show_issues_body %>
         </div>
 
         <h3>Commits</h3>
         <div class="checkbox">
-          <%= label f, :show_commits, "Get information about commits" %>
+          <%= label f, :show_commits, "Show new commits commits" %>
           <%= checkbox f, :show_commits %>
         </div>
       </div>
@@ -70,6 +70,8 @@
     <%= link "My invoices", to: Routes.user_path(@conn, :billing) %>
     <%= link "Change my plan", to: Routes.user_path(@conn, :billing) %>
     <%= link "Cancel my subscription", to: Routes.user_path(@conn, :delete), method: :delete, data: [confirm: "This will cancel your subscription and definitely remove your account. Are you sure?"], class: "danger" %>
-    <%#= link "Last newsletter", to: Routes.user_path(@conn, :last_newsletter) %>
+    <%= if Enum.member?(["f@f.fr", "franklin@odena.eu"], Pow.Plug.current_user(@conn).email) do %>
+      <%= link "Last newsletter", to: Routes.user_path(@conn, :last_newsletter) %>
+    <% end %>
   </section>
 </div>

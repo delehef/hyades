@@ -10,10 +10,6 @@
   <%= email_input f, Pow.Ecto.Schema.user_id_field(@changeset) %>
   <%= error_tag f, Pow.Ecto.Schema.user_id_field(@changeset) %>
 
-  <%= label f, :billing_name %>
-  <%= text_input f, :billing_name %>
-  <%= error_tag f, :billing_name %>
-
   <%= label f, :password %>
   <%= password_input f, :password %>
   <%= error_tag f, :password %>

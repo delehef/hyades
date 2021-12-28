@@ -8,16 +8,15 @@
   </div>
 
   <div>
-    <!-- <h2>
-         Never miss an update of an interesting project again.
-         </h2> -->
+    <!-- <h2> Never miss an update of an interesting project again. </h2> -->
     <p id="desc">
-      Every week, receive a summary of everything that happened in your starred Github repos.
+      Every week, we mail you a summary of everything that happened in your starred Github repos.
     </p>
   </div>
   <img src="<%= Routes.static_path(@conn, "/images/sshot.jpg") %>">
 
-  <h2 style="margin-bottom: 2rem; color: #df460f; text-shadow: 0 0 1rem #df460f; transform: rotate(-5deg);">Try it free for a month (4 newsletters)!</h2>
+  <h2 style="margin-bottom: 2rem; color: #df460f; text-shadow: 0 0 1rem #df460f; transform: rotate(-5deg);">Try it free for a month (4 newsletters)</h2>
+  <h3>Then $0.80/mo ($10 billed annually)</h3>
 
 
   <div id="buttons">

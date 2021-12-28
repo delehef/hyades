@@ -19,6 +19,10 @@ defmodule HyadesWeb.Router do
     plug Pow.Plug.RequireAuthenticated, error_handler: Pow.Phoenix.PlugErrorHandler
   end
 
+  pipeline :stripe_webhook do
+    plug :put_secure_browser_headers
+  end
+
   if Mix.env == :dev do
     forward "/sent_emails", Bamboo.SentEmailViewerPlug
   end
@@ -51,15 +55,11 @@ defmodule HyadesWeb.Router do
        get "/authorize", UserController, :github_register
        get "/back", UserController, :github_back
      end
-     # Stripe integration
-     scope "/subscribe" do
-       ## Chose a plan
-       get "/", UserController, :stripe_register
-       ## Redirected there when payment succeeded
-       get "/success/", UserController, :stripe_success
-       ## Returns a subscription object
-       get "/plan/:type", UserController, :stripe_plans
-     end
+  end
+
+  scope "/", HyadesWeb do
+    pipe_through :stripe_webhook
+    post "/stripe/hooks", StripeController, :webhooks
   end
 
   # Enables LiveDashboard only for development

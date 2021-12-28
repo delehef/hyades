@@ -1,7 +1,13 @@
-defmodule Hyades.Users do
-  require Logger
+defmodule Hyades.Users.Mailer do
+  use Bamboo.Mailer, otp_app: :hyades
+end
 
-  import Ecto.Query
+defmodule Hyades.Users do
+  import Bamboo.Email
+  import Bamboo.Phoenix
+  use Bamboo.Phoenix, view: HyadesWeb.EmailView
+
+  require Logger
 
   use Pow.Ecto.Context,
     repo: Hyades.Repo,
@@ -20,7 +26,13 @@ defmodule Hyades.Users do
   end
 
   def register_stripe(user) do
-    with {:ok, customer} <- Stripe.Customer.create(%{email: user.email, name: user.billing_name}),
+    with {:ok, customer} <- Stripe.Customer.create(%{email: user.email}),
+         {:ok, _subscription} <-
+           Stripe.Subscription.create(%{
+             customer: customer,
+             items: [%{price: Application.get_env(:hyades, :yearly_price)}],
+             trial_period_days: Application.get_env(:hyades, :trial_length)
+           }),
          {:ok, user} <-
            Ecto.Changeset.change(user, customer_id: customer.id) |> Hyades.Repo.update() do
       {:ok, user}
@@ -30,11 +42,6 @@ defmodule Hyades.Users do
         Hyades.Repo.delete(user)
         {:error, "Unable to create a Stripe customer"}
     end
-  end
-
-  def validate_stripe(user) do
-    Ecto.Changeset.change(user, stripe_done: true)
-    |> Hyades.Repo.update()
   end
 
   def validate_github(user, token) do
@@ -110,13 +117,55 @@ defmodule Hyades.Users do
   end
 
   def check_subscription(user) do
-    with {:ok, subscriptions_active} <-
-           Stripe.Subscription.list(%{customer: user.customer_id, status: "active"}),
-         {:ok, subscriptions_trial} <-
-           Stripe.Subscription.list(%{customer: user.customer_id, status: "trialing"}) do
-      !(Enum.empty?(subscriptions_active.data) && Enum.empty?(subscriptions_trial.data))
-    else
-      _ -> false
+    user.subscribed
+  end
+
+  def subscribe(user) do
+    Logger.info("#{user.email} is now subscribed")
+
+    Ecto.Changeset.change(user, subscribed: true)
+    |> Hyades.Repo.update()
+  end
+
+  def unsubscribe(user) do
+    Logger.info("#{user.email} is now unsubscribed")
+
+    Ecto.Changeset.change(user, subscribed: false)
+    |> Hyades.Repo.update()
+  end
+
+  def end_trial(user) do
+    new_email()
+    |> Bamboo.Email.from("Hyades<contact@hyades.info>")
+    |> put_header("Reply-To", "contact@hyades.info")
+    |> to(user.email)
+    |> subject("Hyades trial will soon end")
+    |> put_html_layout({HyadesWeb.LayoutView, "email.html"})
+    |> render(:trial_end)
+    |> Hyades.Users.Mailer.deliver_later()
+  end
+
+  def payment_failed(user) do
+    email =
+      new_email()
+      |> Bamboo.Email.from("Hyades<contact@hyades.info>")
+      |> put_header("Reply-To", "contact@hyades.info")
+      |> to(user.email)
+      |> subject("Payment failed")
+      |> put_html_layout({HyadesWeb.LayoutView, "email.html"})
+      |> render(:payment_failed)
+      |> Hyades.Users.Mailer.deliver_now()
+
+    case email do
+      {:ok, _} ->
+        Logger.info("BAMBOO: email sent")
+
+      {:error, e} ->
+        Logger.error("BAMBOO: #{e}")
     end
+  end
+
+  def get_by_customer_id(customer_id) do
+    Hyades.Repo.get_by(Hyades.Users.User, customer_id: customer_id)
   end
 end

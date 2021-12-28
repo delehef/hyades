@@ -93,7 +93,9 @@ config :hyades, Hyades.Github.Mailer,
   open_email_in_browser_url: "http://localhost:4000/sent_emails"
 
 config :hyades,
-  stripe_public_key: "STRIPE_TEST_PUBLIC_API_KEY"
+  stripe_public_key: "",
+  yearly_price: "",
+  trial_length: 1
 
 # Get these from your Github app settings
 config :hyades, Hyades.Github,

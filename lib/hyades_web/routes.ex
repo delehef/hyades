@@ -9,5 +9,5 @@ defmodule HyadesWeb.Pow.Routes do
   def after_sign_out_path(conn), do: Routes.page_path(conn, :index)
 
   @impl true
-  def after_registration_path(conn), do: Routes.user_path(conn, :stripe_register)
+  def after_registration_path(conn), do: Routes.user_path(conn, :github_register)
 end
