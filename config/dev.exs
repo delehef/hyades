@@ -95,6 +95,7 @@ config :hyades, Hyades.Github.Mailer,
 config :hyades,
   stripe_public_key: "",
   yearly_price: "",
+  stripe_api_secret_key: "",
   trial_length: 1
 
 # Get these from your Github app settings

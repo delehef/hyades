@@ -2,6 +2,6 @@
 
 pkgs.mkShell {
   buildInputs = [
-    pkgs.elixir pkgs.nodejs
+    pkgs.elixir pkgs.nodejs pkgs.stripe-cli
   ];
 }

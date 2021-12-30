@@ -9,7 +9,7 @@ defmodule HyadesWeb.StripeWebhooksPlug do
   def init(config), do: config
 
   def call(%{request_path: "/stripe/hooks"} = conn, _) do
-    signing_secret = Application.get_env(:stripity_stripe, :signing_secret)
+    signing_secret = Application.get_env(:hyades, :stripe_api_secret_key)
     [stripe_signature] = Plug.Conn.get_req_header(conn, "stripe-signature")
 
     with {:ok, body, _} <- Plug.Conn.read_body(conn),
