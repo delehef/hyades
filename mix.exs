@@ -43,6 +43,8 @@ defmodule Hyades.MixProject do
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.11"},
+      {:esbuild, "~> 0.2", runtime: Mix.env() == :dev},
+      {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:pow, "~> 1.0"},
@@ -70,6 +72,7 @@ defmodule Hyades.MixProject do
       setup: ["deps.get", "ecto.setup", "cmd npm install --prefix assets"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
+      "assets.deploy": ["esbuild default --minify", "phx.digest"],
       test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
