@@ -99,7 +99,7 @@ config :hyades,
   trial_length: 1
 
 # Get these from your Github app settings
-config :hyades, Hyades.Github,
+config :hyades,
   github_client_id: "b21ced57766a5270e4a5",
   github_client_secret: "8fd0d89f5d58d9f5632cc140121b828b7fcc7844",
   app_id: 74313,
