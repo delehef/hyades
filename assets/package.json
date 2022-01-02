@@ -3,6 +3,7 @@
     "main": "postcss.config.js",
     "dependencies": {},
     "devDependencies": {
+        "@tailwindcss/forms": "^0.4",
         "autoprefixer": "^10",
         "postcss": "^8",
         "postcss-nested": "^5",

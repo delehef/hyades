@@ -78,7 +78,7 @@ config :phoenix, :stacktrace_depth, 20
 config :phoenix, :plug_init_mode, :runtime
 
 config :stripity_stripe,
-  api_key: "STRIPE_TEST_PRIVATE_API_KEY"
+  api_key: "sk_test_51H8rKNLSkre068ylZgcJiXXMGcYfyZyZZjPlcnFpObrlY08PZQsiFT8g2UnzXruoNm1vEujDUAaQ8qiAXwRkHz9U00fDHr2zHF"
 
 config :hyades, HyadesWeb.Pow.Mailer,
   adapter: Bamboo.LocalAdapter,
@@ -89,15 +89,14 @@ config :hyades, Hyades.Github.Mailer,
   open_email_in_browser_url: "http://localhost:4000/sent_emails"
 
 config :hyades,
-  stripe_public_key: "",
-  yearly_price: "",
-  stripe_api_secret_key: "",
+  stripe_api_secret_key: "whsec_nsDSBg5hfjvjPdlI1y6PpsW0yNGMI9v5",
+  stripe_public_key: "pk_test_51H8rKNLSkre068ylISeCpIVHjsAfRCTKWWjAth4hIjReUjlWEFbY84bCIYRWkrgE3w6N8HiGpXcXgCZ8PQffhEWU00KJllnBVM",
+  yearly_price: "price_1HA0NQLSkre068ylbCqOVEs8",
   trial_length: 1
 
 # Get these from your Github app settings
 config :hyades, Hyades.Github,
-  github_client_id: "",
-  github_client_secret: "",
-  app_id: 123_123,
-  # File.read!("github-private-key.pem")
-  pem_key: ""
+  github_client_id: "b21ced57766a5270e4a5",
+  github_client_secret: "8fd0d89f5d58d9f5632cc140121b828b7fcc7844",
+  app_id: 74313,
+  pem_key: File.read!("hyades-info.2020-07-25.private-key.pem")

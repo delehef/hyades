@@ -1,77 +1,72 @@
-<%= link "Sign out", to: Routes.pow_session_path(@conn, :delete), method: :delete %>
-<div id="settings">
-  <section id="account">
-    <h1>Account Settings</h1>
-    <%= form_for @changeset, @action, [as: :user], fn f -> %>
-      <%= if @changeset.action do %>
-        <div class="alert alert-danger">
-          <p>Oops, something went wrong! Please check the errors below.</p>
-        </div>
-      <% end %>
+<div class="container mx-auto max-w-screen-md">
+  <%= form_for @changeset, @action, [as: :user], fn f -> %>
+    <%= if @changeset.action do %>
+      <div class="text-lg font-medium text-red-500 my-12">
+        <p>Something went wrong, please check the errors below.</p>
+      </div>
+    <% end %>
+    <div class="flex flex-wrap md:justify-around">
+      <section class="pb-12">
+        <h2 class="font-bold text-2xl">Newsletter settings</h2>
+        <div>
+          <h3 class="font-bold text-xl mt-4">Releases</h3>
+          <div>
+            <%= checkbox f, :show_releases %>
+            <%= label f, :show_releases, "Show releases" %>
+          </div>
 
-      <div>
-        <%= label f, :current_password %>
+          <div>
+            <%= checkbox f, :show_releases_body %>
+            <%= label f, :show_releases_body, "Show releases details" %>
+          </div>
+
+          <h3 class="font-bold text-xl mt-4">Issues</h3>
+          <div>
+            <%= checkbox f, :show_issues %>
+            <%= label f, :show_issues, "Show active issues" %>
+          </div>
+
+          <div>
+            <%= checkbox f, :show_issues_body %>
+            <%= label f, :show_issues_body, "Show active issue details" %>
+          </div>
+
+          <h3 class="font-bold text-xl mt-4">Commits</h3>
+          <div>
+            <%= checkbox f, :show_commits %>
+            <%= label f, :show_commits, "Show new commits" %>
+          </div>
+        </div>
+      </section>
+
+      <section class="pb-12">
+        <h2 class="font-bold text-2xl">Account settings</h2>
+        <%= label f, :current_password, class: "block mt-6 font-medium" %>
         <%= password_input f, :current_password %>
         <%= error_tag f, :current_password %>
-      </div>
 
-      <div>
-        <%= label f, Pow.Ecto.Schema.user_id_field(@changeset) %>
+        <%= label f, Pow.Ecto.Schema.user_id_field(@changeset), class: "block mt-6 font-medium" %>
         <%= email_input f, Pow.Ecto.Schema.user_id_field(@changeset) %>
         <%= error_tag f, Pow.Ecto.Schema.user_id_field(@changeset) %>
-      </div>
 
-      <div>
-        <%= label f, :password, "New password" %>
+        <%= label f, :password, "New password", class: "block mt-6 font-medium" %>
         <%= password_input f, :password %>
         <%= error_tag f, :password %>
-      </div>
 
-      <div>
-        <%= label f, :password_confirmation, "New password confirmation" %>
+        <%= label f, :password_confirmation, "New password confirmation", class: "block mt-6 font-medium" %>
         <%= password_input f, :password_confirmation %>
         <%= error_tag f, :password_confirmation %>
-      </div>
-      <%= submit "Update" %>
+        <%= submit "Update", class: "my-6 block px-3 py-2 text-lg font-medium text-white bg-[#0000dd] rounded" %>
+      </section>
+    </div>
+  <% end %>
 
-      <h2 style="margin-top: 4rem;">Newsletter settings</h2>
-      <div>
-        <h3>Releases</h3>
-        <div class="checkbox">
-          <%= label f, :show_releases, "Show releases" %>
-          <%= checkbox f, :show_releases %>
-        </div>
-        <div class="checkbox">
-          <%= label f, :show_releases_body, "Show releases details" %>
-          <%= checkbox f, :show_releases_body %>
-        </div>
-
-        <h3>Issues</h3>
-        <div class="checkbox">
-          <%= label f, :show_issues, "Show active issues" %>
-          <%= checkbox f, :show_issues %>
-        </div>
-        <div class="checkbox">
-          <%= label f, :show_issues_body, "Show active issue details" %>
-          <%= checkbox f, :show_issues_body %>
-        </div>
-
-        <h3>Commits</h3>
-        <div class="checkbox">
-          <%= label f, :show_commits, "Show new commits commits" %>
-          <%= checkbox f, :show_commits %>
-        </div>
-      </div>
-      <%= submit "Save" %>
-    <% end %>
-  </section>
-  <section id="billing">
-    <h1>Billing</h1>
-    <%= link "My invoices", to: Routes.user_path(@conn, :billing) %>
-    <%= link "Change my plan", to: Routes.user_path(@conn, :billing) %>
-    <%= link "Cancel my subscription", to: Routes.user_path(@conn, :delete), method: :delete, data: [confirm: "This will cancel your subscription and definitely remove your account. Are you sure?"], class: "danger" %>
+  <section class="mt-12">
+    <h2 class="font-bold text-2xl">Billing</h2>
+    <%= link "View my subscription", to: Routes.user_path(@conn, :billing), class: "block underline mt-4" %>
+    <%= link "Cancel my subscription", to: Routes.user_path(@conn, :delete), method: :delete, data: [confirm: "This will cancel your subscription and definitely remove your account. Are you sure?"], class: "block underline text-red-500 mt-4" %>
     <%= if Enum.member?(["f@f.fr", "franklin@odena.eu"], Pow.Plug.current_user(@conn).email) do %>
-      <%= link "Last newsletter", to: Routes.user_path(@conn, :last_newsletter) %>
+      <%= link "Last newsletter", to: Routes.user_path(@conn, :last_newsletter), class: "block underline mt-4 text-emerald-500" %>
     <% end %>
   </section>
 </div>

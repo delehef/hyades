@@ -37,6 +37,8 @@ defmodule HyadesWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/pricing", PageController, :pricing
+    get "/sample", PageController, :sample
     get "/contact", PageController, :contact
     get "/legal_notices", PageController, :legal_notices
     get "/conditions", PageController, :conditions

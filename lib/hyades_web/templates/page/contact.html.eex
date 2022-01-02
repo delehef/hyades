@@ -1,9 +1,6 @@
-<a class="home" href="/">↩ Back</a>
-<div id="notices">
-  <h1>Contact</h1>
-  <p id="contact">You have a question? A Suggestion? You encountered a bug? You need information? Feel free to:
-    <ul>
-      <li>contact us at <a href="mailto:contact@hyades.info">contact@hyades.info</a></li>
-    </ul>
+<div class="container mx-auto max-w-screen-md">
+  <h1 class="my-6 text-2xl font-bold">Contact</h1>
+  <p id="contact">
+    You have a question? A Suggestion? You encountered a bug? You need information? Feel free to contact us at <a href="mailto:contact@hyades.info" class="font-medium underline text-emerald-500">contact@hyades.info</a>
   </p>
 </div>

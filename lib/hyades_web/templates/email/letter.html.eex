@@ -19,7 +19,7 @@
       <h2>Issues & Pull Requests</h2>
       <ul>
         <%= for issue <- repo.issues do %>
-          <li class="issue" style="<%= if issue.body != "", do: "margin-bottom: 2rem; padding-left: 1rem; border-left: 1px solid #dd1188" %>">
+          <li class="issue" style="<%= if issue.body != "", do: "margin-bottom: 2rem; padding-left: 1rem; border-left: 1px solid #10b981" %>">
             <a class="issue" href="<%= issue.url %>"><%= issue.title %></a>
             <%= for label <- issue.labels do %>
               <span class="label" style="padding: 0em 0.1em; font-weight: bold; color: aliceblue; background-color: #<%= label.color %>;"><%= label.name %></span>

@@ -1,16 +1,18 @@
-<%= form_for @changeset, @action, [as: :user, class: "centered"], fn f -> %>
-  <h1>Reset password</h1>
-  <%= if @changeset.action do %>
-    <div class="alert alert-danger">
-      <p>Oops, something went wrong! Please check the errors below.</p>
+<div class="container mx-auto max-w-screen-md">
+  <%= form_for @changeset, @action, [as: :user, class: "max-w-sm p-4 mt-6"], fn f -> %>
+    <h1 class="text-2xl font-bold">Reset password</h1>
+    <%= if @changeset.action do %>
+      <div class="font-medium text-red-500">
+        <p>Something went wrong, please check the errors below.</p>
+      </div>
+    <% end %>
+
+    <%= label f, :email, class: "block mt-6 font-medium" %>
+    <%= email_input f, :email, class: "block w-full", autofocus: true %>
+    <%= error_tag f, :email %>
+
+    <div class="mt-4 flex flex-row justify-end items-center">
+      <%= submit "Submit", class: "px-4 py-3 text-lg font-medium text-white bg-[#0000dd] rounded" %>
     </div>
   <% end %>
-
-  <%= label f, :email %>
-  <%= email_input f, :email %>
-  <%= error_tag f, :email %>
-
-  <div>
-    <%= submit "Submit" %>
-  </div>
-<% end %>
+</div>

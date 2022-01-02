@@ -1,3 +1,7 @@
+<% is_root = @conn.request_path == "/" %>
+<% header_bg = if is_root, do: "bg-[#010e75]", else: "0" %>
+<%# header_bg = if is_root, do: "bg-[#0d0d30]", else: "0" %>
+<% header_fg = if is_root, do: "text-white", else: "text-black" %>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -9,20 +13,34 @@
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/assets/app.css") %>"/>
     <script defer type="text/javascript" src="<%= Routes.static_path(@conn, "/assets/app.js") %>"></script>
   </head>
-  <body>
-    <div class="font-sans">
+  <body class="font-sans bg-[#eee]">
+    <div class="flex flex-col min-h-screen">
+      <header class="<%= header_bg %>">
+        <div class="container mx-auto max-w-screen-md py-4 flex flex-row items-center font-bold <%= header_fg %>">
+          <h1 class="sm:hidden block grow text-4xl font-bold tracking-wider bg-gradient-to-br bg-clip-text from-emerald-500 to-sky-600 text-transparent"><a href="/">H</a></h1>
+          <h1 class="hidden sm:block grow text-4xl font-bold tracking-wider bg-gradient-to-br bg-clip-text from-emerald-500 to-sky-600 text-transparent"><a href="/">HYADES</a></h1>
+          <%= if Pow.Plug.current_user(@conn) do %>
+            <%= link "Settings", to: Routes.pow_registration_path(@conn, :edit), class: "text-lg underline pr-4" %>
+            <%= link "Logout", to: Routes.pow_session_path(@conn, :delete), method: :delete, class: "text-lg underline pr-4 text-red-500" %>
+          <% else %>
+            <%= link "Pricing", to: Routes.page_path(@conn, :pricing), class: "text-lg underline pr-4" %>
+            <%= link "Login", to: Routes.pow_session_path(@conn, :new), class: "text-lg underline pr-4" %>
+            <%= link "Signup", to: Routes.pow_registration_path(@conn, :new), class: "text-lg underline" %>
+          <% end %>
+        </div>
+      </header>
       <main>
-        <div class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></div>
-        <div class="alert alert-error" role="alert"><%= get_flash(@conn, :error) %></div>
+        <div class="container mx-auto max-w-screen-md">
+          <div class="text-lg font-medium text-sky-600" role="alert"><%= get_flash(@conn, :info) %></div>
+          <div class="text-lg font-medium text-red-500" role="alert"><%= get_flash(@conn, :error) %></div>
+        </div>
         <%= @inner_content %>
       </main>
-      <footer>
-        <div id="links">
-          <%= link "Contact", to: Routes.page_path(@conn, :contact) %>
-          <%= link "Legal notices", to: Routes.page_path(@conn, :legal_notices) %>
-          <%= link "Terms & Conditions", to: Routes.page_path(@conn, :conditions) %>
-        </div>
-        <div id="c">© 2020 Hyades, by Delehelle Ingénierie</div>
+      <footer class="mt-auto container mx-auto max-w-screen-md flex sm:flex-row flex-col sm:items-center text-slate-600 py-8">
+        <%= link "Contact", to: Routes.page_path(@conn, :contact), class: "underline pr-4 my-2" %>
+        <%= link "Legal notices", to: Routes.page_path(@conn, :legal_notices), class: "underline pr-4 my-2" %>
+        <%= link "Terms & Conditions", to: Routes.page_path(@conn, :conditions), class: "underline pr-4 my-2" %>
+        <div class="grow pr-4 md:text-right my-2 text-slate-400">© 2020-2022 Hyades</div>
       </footer>
     </div>
   </body>

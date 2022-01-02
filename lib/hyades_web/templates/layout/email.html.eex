@@ -4,16 +4,13 @@
     <style>
      body {
          font-family: sans-serif;
-         color: aliceblue;
-         background-color: #0d0d30;
+         color: #333;
      }
      h1, h2, h3, h4, h5, h6 {
-         color: #00ac57;
-         text-shadow: 0 0 1rem #00ac57;
+         color: #333;
      }
      h1:not(:first-child) {margin-top: 3rem;}
-     a {color: #dd1188;}
-     h1 a {text-shadow: 0 0 1rem #dd1188}
+     a {color: #10b981;}
      ul {list-style-type: none; padding: 0}
 
 
@@ -25,7 +22,7 @@
      }
 
      li.release:has(>p:not(:empty)), li.issue:has(> p) {
-         border-bottom: 1px solid #dd1188;
+         border-bottom: 1px solid #10b981;
      }
 
      a.release, a.issue {

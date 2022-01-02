@@ -1,29 +1,27 @@
-<%= link "Back", to: Routes.page_path(@conn, :index) %>
-<%= form_for @changeset, @action, [as: :user, class: "centered"], fn f -> %>
-  <%= if @changeset.action do %>
-    <div class="alert alert-error">
-      <p>Something went wrong!</br> Please check the errors below.</p>
+<div class="container mx-auto max-w-screen-md">
+  <%= form_for @changeset, @action, [as: :user, class: "max-w-sm p-4 mt-6"], fn f -> %>
+    <h1 class="text-2xl font-bold">Signup</h1>
+    <%= if @changeset.action do %>
+      <div class="font-medium text-red-500">
+        <p>Something went wrong! Please check the errors below.</p>
+      </div>
+    <% end %>
+
+    <%= label f, Pow.Ecto.Schema.user_id_field(@changeset), class: "block mt-6 font-medium" %>
+    <%= email_input f, Pow.Ecto.Schema.user_id_field(@changeset), class: "block w-full", autofocus: true %>
+    <%= error_tag f, Pow.Ecto.Schema.user_id_field(@changeset) %>
+
+    <%= label f, :password, class: "block mt-6 font-medium" %>
+    <%= password_input f, :password, class: "block w-full" %>
+    <%= error_tag f, :password %>
+
+    <%= label f, :password_confirmation, class: "block mt-6 font-medium" %>
+    <%= password_input f, :password_confirmation, class: "block w-full" %>
+    <%= error_tag f, :password_confirmation %>
+
+    <div class="mt-4 flex flex-row justify-between items-center">
+      <%= link "Already have an account?", to: Routes.pow_session_path(@conn, :new), class: "text-sm underline" %>
+      <%= submit "Subscribe", class: "px-4 py-3 text-lg font-medium text-white bg-[#0000dd] rounded" %>
     </div>
   <% end %>
-
-  <%= label f, Pow.Ecto.Schema.user_id_field(@changeset) %>
-  <%= email_input f, Pow.Ecto.Schema.user_id_field(@changeset) %>
-  <%= error_tag f, Pow.Ecto.Schema.user_id_field(@changeset) %>
-
-  <%= label f, :password %>
-  <%= password_input f, :password %>
-  <%= error_tag f, :password %>
-
-  <%= label f, :password_confirmation %>
-  <%= password_input f, :password_confirmation %>
-  <%= error_tag f, :password_confirmation %>
-
-  <div style="margin-top: 2rem;">
-    <%= checkbox f, :cgu, [required: true, style: "display: inline; width: auto;"] %>
-    <%= label f, :cgu, raw("I accept the <a href='/conditions'>Terms and Conditions of Use</a>"), style: "display: inline;" %>
-  </div>
-
-    <%= submit "Subscribe" %>
-    <p>or</p>
-    <p><%= link "Sign in", to: Routes.pow_session_path(@conn, :new) %></p>
-<% end %>
+</div>

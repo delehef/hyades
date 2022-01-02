@@ -1,0 +1,349 @@
+<div class="container mx-auto max-w-screen-md">
+  <h1 class="text-4xl my-8 font-bold">Sample Newsletter</h1>
+  <p>Here is what you will get every Monday if you subscribe to Hyades</p>
+  <div class="p-4 mt-8 border border-solid border-black shadow-[5px_5px_#444] text-sm overflow-auto" style="max-height: 60vh;">
+
+      <style>
+       body {
+           font-family: sans-serif;
+           color: #333;
+       }
+       h1.sample {
+           font-size: 2rem;
+           margin-bottom: 1rem;
+           margin-top: 5rem;
+       }
+       h2.sample {
+           font-size: 1.5rem;
+           margin-top: 1rem;
+           margin-bottom: 1rem;
+       }
+       h3.sample, a.sample.issue {
+           font-size: 1.1rem;
+           margin-bottom: 0.3rem;
+       }
+       a.sample {color: #10b981;}
+       ul {list-style-type: none; padding: 0}
+
+
+       img { max-width: 100%; }
+       pre { width: 100%; overflow-x: scroll };
+       ul { padding
+           li.release, li.issue {
+               padding: 0.5rem 1rem;
+           }
+
+           li.release:has(>p:not(:empty)), li.issue:has(> p) {
+               border-bottom: 1px solid #10b981;
+           }
+
+           a.release, a.issue {
+               font-size: 0.9rem;
+           }
+
+           span.label {
+               padding: 0rem 0.25rem;
+               border-radius: 3px;
+               white-space: nowrap;
+           }
+           pre {
+               max-width: 100%;
+               overflow-x: scroll;
+           }
+      </style>
+
+      <h1 class="sample" style="margin-top: 0;"><a class="sample" href="https://github.com/Alonely0/Voila">Voila</a></h1 class="sample">
+
+      <h2 class="sample">New releases</h2>
+      <ul>
+
+        <li class="release">
+          <a class="sample" class="release" href="https://github.com/Alonely0/Voila/releases/tag/3.4.1">Releasing Voila 3.4.1</a>
+          <p></p><p>
+            This version comes with improvements to the optimizations and the compiler, which now ships with the source needed, so <code class="inline">git</code> isn’t needed anymore.</p>
+          <p></p>
+        </li>
+
+      </ul>
+
+
+
+
+      <h1 class="sample"><a class="sample" href="https://github.com/abo-abo/ace-window">ace-window</a></h1 class="sample">
+
+
+      <h2 class="sample">Issues &amp; Pull Requests</h2>
+      <ul>
+
+        <li class="issue" style="margin-bottom: 2rem; padding-left: 1rem; border-left: 1px solid #10b981">
+          <a class="sample" class="issue" href="https://github.com/abo-abo/ace-window/pull/218">Add GPLv3 license file</a>
+
+          <p></p><p>
+            The GPL requires distributing the full license with the package.</p>
+          <p>
+            Thanks!</p>
+          <p></p>
+        </li>
+
+        <li class="issue" style="margin-bottom: 2rem; padding-left: 1rem; border-left: 1px solid #10b981">
+          <a class="sample" class="issue" href="https://github.com/abo-abo/ace-window/issues/216">Add function to call ace-window with forced aw-dispatch</a>
+
+          <p></p><p>
+            Hi, I apologize if this was already asked.
+            I use ace-window with <code class="inline">aw-dispatch-always</code> set to nil, as I really like the use of <code class="inline">M-o</code> as a switch windows when I have only 2 windows. However, I also find very comfortably having the dispatchable actions (like <code class="inline">v</code> to split a window). Without changing the value of <code class="inline">aw-dispatch-always</code>, I thought that something like this can be added:</p>
+          <pre><code class="elisp">(defun ace-window-manual-dispatch (arg)
+  "Calls `ace-window' with ARG asking for the dispatch, even if `aw-dispatch-always' is nil.
+
+This could be useful to use the advanced commands"
+  (interactive "p")
+(let ((aw-dispatch-always t))
+  (ace-window arg)
+  ))
+          </code></pre>
+          <p>
+            I use that in my init file and it works, and I bound that to <code class="inline">C-M-o</code>, in order to have like a “super” <code class="inline">ace-window</code> call.
+            If that is useful, I would be very happy to create a pull request for it.</p>
+          <p></p>
+        </li>
+
+      </ul>
+
+
+
+
+
+
+      <h1 class="sample"><a class="sample" href="https://github.com/seagle0128/doom-modeline">doom-modeline</a></h1 class="sample">
+
+
+      <h2 class="sample">Issues &amp; Pull Requests</h2>
+      <ul>
+
+        <li class="issue" style="margin-bottom: 2rem; padding-left: 1rem; border-left: 1px solid #10b981">
+          <a class="sample" class="issue" href="https://github.com/seagle0128/doom-modeline/issues/494">[Feature Request] Is it possible to align the right hand side of the mode-line precisely with a variable-pitch font?</a>
+
+          <span class="label" style="padding: 0em 0.1em; font-weight: bold; color: aliceblue; background-color: #a2eeef;">enhancement</span>
+
+          <p></p><p>
+            I know this is a rather minor thing as noted in the quote below, but I wondered if it is still possible because I try to use a variable-pitch font where possible.</p>
+          <p>
+            Here was a previous patch/comment related to it in <a class="sample" href="https://github.com/seagle0128/doom-modeline/issues/301#issuecomment-584762592">https://github.com/seagle0128/doom-modeline/issues/301#issuecomment-584762592</a></p>
+          <blockquote>
+            <p>
+              I committed a patch to support different fonts in mode line. Just need to set mode-line and mode-line-inactive face. All icons should be Okay now. The right position of the segment may not be accurate but I think it’s a minor issue.  </p>
+          </blockquote>
+          <p>
+            Depending on which characters one uses in the right hand side, the offset to the right window margin is varying a lot:</p>
+          <p>
+            <img src="https://user-images.githubusercontent.com/15002298/146264402-81fe71da-88ed-40d6-97e3-cd1813714b02.png" alt="image">
+          </p>
+          <p>
+            I tested with this code:</p>
+          <pre><code class="emacs-lisp">(doom-modeline-mode 1)
+(set-face-attribute 'mode-line nil
+                    :font "Avenir" ; present on macOS but I suppose any other variable-pitch font would reproduce
+                    :height 201)
+          </code></pre>
+          <hr class="thin">
+          <p>
+            I don’t know if this is possible because <code class="inline">(string-width)</code> is used in <code class="inline">(doom-modeline-def-modeline</code>) which does not return pixels. And I suspect that it might be a slight performance hit as one needs to calculate the right hand side pixel width and then subtract it from the total window pixel width.</p>
+          <p>
+            Still I am wondering if it could be implemented without impacting performance too much as all the ‘big’ non-Emacs code editors have it in their mode-line variant :)</p>
+          <hr class="thin">
+          <p>
+            This is possibly related to <a class="sample" href="https://github.com/seagle0128/doom-modeline/issues/487">https://github.com/seagle0128/doom-modeline/issues/487</a></p>
+          <p></p>
+        </li>
+
+      </ul>
+
+
+
+
+
+
+
+
+
+      <h1 class="sample"><a class="sample" href="https://github.com/zhiburt/tabled">tabled</a></h1 class="sample">
+
+
+      <h2 class="sample">Issues &amp; Pull Requests</h2>
+      <ul>
+
+        <li class="issue" style="margin-bottom: 2rem; padding-left: 1rem; border-left: 1px solid #10b981">
+          <a class="sample" class="issue" href="https://github.com/zhiburt/tabled/pull/47">Add a builder interface</a>
+
+          <p></p><p>
+            Original issue was addressed by @sadbuttrueasfuck in a reddit thread <a class="sample" href="https://www.reddit.com/r/rust/comments/rs9bm2/tabled_v040_an_easy_to_use_library_for_pretty/">https://www.reddit.com/r/rust/comments/rs9bm2/tabled_v040_an_easy_to_use_library_for_pretty/</a></p>
+          <p></p>
+        </li>
+
+        <li class="issue" style="margin-bottom: 2rem; padding-left: 1rem; border-left: 1px solid #10b981">
+          <a class="sample" class="issue" href="https://github.com/zhiburt/tabled/issues/46">Create a style from pattern</a>
+
+          <span class="label" style="padding: 0em 0.1em; font-weight: bold; color: aliceblue; background-color: #a2eeef;">enhancement</span>
+
+          <p></p><p>
+            We could create a style from pattern.</p>
+          <p>
+            Like having a pattern for line.
+            And repeat it corresponding of table length.</p>
+          <p>
+            I am note sure now how it may look like but here’s a general idea.</p>
+          <pre><code class="rust">PatternStyle::new("=+")
+
+=+=+=+=+=
+* 1  23 *
+=+=+=+=+=
+          </code></pre>
+          <p></p>
+        </li>
+
+        <li class="issue" style="margin-bottom: 2rem; padding-left: 1rem; border-left: 1px solid #10b981">
+          <a class="sample" class="issue" href="https://github.com/zhiburt/tabled/issues/45">Recognize formatting options in Display implementation</a>
+
+          <span class="label" style="padding: 0em 0.1em; font-weight: bold; color: aliceblue; background-color: #a2eeef;">enhancement</span>
+
+          <span class="label" style="padding: 0em 0.1em; font-weight: bold; color: aliceblue; background-color: #7057ff;">good first issue</span>
+
+          <span class="label" style="padding: 0em 0.1em; font-weight: bold; color: aliceblue; background-color: #23816B;">tracking</span>
+
+          <p></p><p>
+            <a class="sample" href="https://doc.rust-lang.org/std/fmt/struct.Formatter.html#">std::fmt::Formatter</a> has a bunch of options which can be determined.
+            We could change the table according to these options.</p>
+            <p>
+              The changes may be done here.
+              <a class="sample" href="https://github.com/zhiburt/tabled/blob/0dbb4263cf9f86ead3d934558f1f8d80274d2a05/src/lib.rs#L304-L308">https://github.com/zhiburt/tabled/blob/0dbb4263cf9f86ead3d934558f1f8d80274d2a05/src/lib.rs#L304-L308</a></p>
+            <ul>
+              <li>
+                [ ]  <a class="sample" href="https://doc.rust-lang.org/std/fmt/struct.Formatter.html#method.align">align</a>
+                Align could apply an <code class="inline">Alignment</code> for each cell.  </li>
+              <li>
+                [ ]  <a class="sample" href="https://doc.rust-lang.org/std/fmt/struct.Formatter.html#method.width">width</a>
+                Width ideally would need to set a width of the whole table including length of separators.
+                But it’s not clear then how to behave in cases where minimum possible length is 5 but 3 was specified.
+                Print nothing?  </li>
+            </ul>
+            <p>
+              There’s more options out there but I don’t see there use case yet.
+              But it might be there.</p>
+            <p></p>
+        </li>
+
+        <li class="issue" style="margin-bottom: 2rem; padding-left: 1rem; border-left: 1px solid #10b981">
+          <a class="sample" class="issue" href="https://github.com/zhiburt/tabled/issues/44">Add a way to print  a list of tables in line</a>
+
+          <span class="label" style="padding: 0em 0.1em; font-weight: bold; color: aliceblue; background-color: #a2eeef;">enhancement</span>
+
+          <span class="label" style="padding: 0em 0.1em; font-weight: bold; color: aliceblue; background-color: #7057ff;">good first issue</span>
+
+          <p></p><p>
+            I noticed that there’s no easy way to print 2 tables in a row.
+            Like this</p>
+          <pre><code>┌───────────────┬─────────┬──────────┬───────────┐        ┌───────────────┬─────────┬──────────┬───────────┐
+│ temperature_c │ wind_ms │ latitude │ longitude │        │ temperature_c │ wind_ms │ latitude │ longitude │
+├───────────────┼─────────┼──────────┼───────────┤        ├───────────────┼─────────┼──────────┼───────────┤
+│      16       │  3000   │ 111.111  │  333.333  │        │      16       │  3000   │ 111.111  │  333.333  │
+│      -20      │   300   │  5.111   │  7282.1   │        │      -20      │   300   │  5.111   │  7282.1   │
+│      40       │   100   │    0     │     0     │        │      40       │   100   │    0     │     0     │
+└───────────────┴─────────┴──────────┴───────────┘        └───────────────┴─────────┴──────────┴───────────┘
+          </code></pre>
+          <p>
+            We could create a different type for achieving it.</p>
+          <p>
+            Or we could create a type which implements <code class="inline">Tabled</code> and wraps <code class="inline">Table</code>.
+            So essentially a 2 tables inside 1 would be printed.
+            Like this</p>
+          <pre><code class="rust">let line = Table::new([ table1, table2 ])
+          </code></pre>
+          <p>
+            <strong>Actually it will not work because Table::new takes rows not columns</strong></p>
+          <p>
+            If anyone have an idea according to the design please feel free to discuss.</p>
+          <p></p>
+        </li>
+
+        <li class="issue" style="margin-bottom: 2rem; padding-left: 1rem; border-left: 1px solid #10b981">
+          <a class="sample" class="issue" href="https://github.com/zhiburt/tabled/pull/38">Switch from String backend to Cow&lt;str&gt;</a>
+
+          <p></p><p>
+            Change of <code class="inline">Tabled</code> trait to</p>
+          <pre><code class="rust">trait Tabled {
+    fn fields(&amp;self) -&gt; Vec&lt;Cow&lt;'_, str&gt;&gt;;
+    fn headers() -&gt; Vec&lt;Cow&lt;'static, str&gt;&gt;;
+}
+          </code></pre>
+          <p>
+            The idea that we don’t waste memory by making copies of <code class="inline">&amp;str</code>.</p>
+          <p>
+            Though the interface became less versatile…</p>
+          <p>
+            I guess there must be done some refactoring then.</p>
+          <p></p>
+        </li>
+
+        <li class="issue" style="margin-bottom: 2rem; padding-left: 1rem; border-left: 1px solid #10b981">
+          <a class="sample" class="issue" href="https://github.com/zhiburt/tabled/issues/19">Allow completely custom border</a>
+
+          <p></p><p>
+            It could be cool to have an ability to have a completely custom border with text squeezed in etc.</p>
+          <p>
+            Example</p>
+          <pre><code>---Hello World---
+...
+          </code></pre>
+          <p></p>
+        </li>
+
+      </ul>
+
+
+
+      <h1 class="sample"><a class="sample" href="https://github.com/doomemacs/themes">themes</a></h1 class="sample">
+
+
+      <h2 class="sample">Issues &amp; Pull Requests</h2>
+      <ul>
+
+        <li class="issue" style="margin-bottom: 2rem; padding-left: 1rem; border-left: 1px solid #10b981">
+          <a class="sample" class="issue" href="https://github.com/doomemacs/themes/pull/695">Fix company's scrollbar in solarized-light theme</a>
+
+          <p></p><p>
+            The old one has “wheat” and “red” colors, which look out of place with the theme.</p>
+          <p>
+            Before
+            <img src="https://user-images.githubusercontent.com/48050400/147404070-416c08f9-bd86-4822-b239-0cea9da085d0.png" alt="Screenshot_20211226_162303">
+          </p>
+          <p>
+            After
+            <img src="https://user-images.githubusercontent.com/48050400/147404072-46826e2f-06bb-48e6-a977-84970438bab2.png" alt="Screenshot_20211226_162219">
+          </p>
+          <p></p>
+        </li>
+
+        <li class="issue" style="margin-bottom: 2rem; padding-left: 1rem; border-left: 1px solid #10b981">
+          <a class="sample" class="issue" href="https://github.com/doomemacs/themes/pull/694">feat(base): add more corfu faces &amp; fixes</a>
+
+          <p></p><p>
+            This PR </p>
+          <ol>
+            <li>
+              <p>
+                adds more <a class="sample" href="https://github.com/minad/corfu">corfu</a> faces to base    </p>
+            </li>
+            <li>
+              <p>
+                fixes <code class="inline">corfu-current</code> because it currently has no difference from <code class="inline">corfu-default</code>    </p>
+              <p>
+                (after)
+                <img src="https://user-images.githubusercontent.com/11665236/147401453-aa931c2e-6358-4827-8397-a66ad697801e.png" alt="after">
+              </p>
+            </li>
+          </ol>
+          <p></p>
+        </li>
+
+      </ul>
+  </div>
+</div>
