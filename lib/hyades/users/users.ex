@@ -5,6 +5,7 @@ end
 defmodule Hyades.Users do
   import Bamboo.Email
   import Bamboo.Phoenix
+  import Ecto.Query
   use Bamboo.Phoenix, view: HyadesWeb.EmailView
 
   require Logger
@@ -114,6 +115,19 @@ defmodule Hyades.Users do
         end
       end
     end)
+  end
+
+  def clean_spam do
+    users = Hyades.Repo.all(Ecto.Query.from u in Hyades.Users.User, where: u.github_token == "")
+
+    for user <- users do
+      with {:ok, _} <- Stripe.Customer.delete(user.customer_id),
+           {:ok, deleted_user} <- Hyades.Repo.delete(user) do
+        Logger.info("Removing #{deleted_user.email}/#{deleted_user.customer_id}")
+      else
+        e -> Logger.error("While removing #{user.email}/#{user.customer_id}: #{inspect(e, pretty: true)}")
+      end
+    end
   end
 
   def check_subscription(user) do

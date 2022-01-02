@@ -61,6 +61,10 @@ config :hyades, :pow,
 
 config :hyades, Hyades.Cron,
   jobs: [
+    cleanup: [
+      schedule: "@weekly",
+      task: {Hyades.Users, :clean_spam, []}
+    ],
     newsletter: [
       schedule: "@weekly",
       task: {Hyades.Users, :send_all_newsletters, []}
