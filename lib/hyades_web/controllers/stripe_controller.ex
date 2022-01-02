@@ -72,8 +72,6 @@ defmodule HyadesWeb.StripeController do
 
   defp handle_webhook(%{type: "invoice.payment_failed"} = event) do
     customer = event.data.object.customer
-    status = event.data.object.status
-    Logger.info("STRIPE: #{customer} is now #{status}")
 
     case Users.get_by_customer_id(customer) do
       nil ->
@@ -81,6 +79,7 @@ defmodule HyadesWeb.StripeController do
         {:notfound, ""}
 
       user ->
+        Logger.info("#{customer} has not paid")
         Users.payment_failed(user)
         {:ok, "success"}
     end
