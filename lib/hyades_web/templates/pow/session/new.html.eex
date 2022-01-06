@@ -1,6 +1,6 @@
 <div class="container mx-auto max-w-screen-md">
   <%= form_for @changeset, @action, [as: :user, class: "max-w-sm  p-4 mt-6"], fn f -> %>
-    <h1 class="text-2xl font-bold">Login</h1>
+    <h1 class="text-2xl font-bold">Log in</h1>
     <%= if @changeset.action do %>
       <div class="font-medium text-red-500">
         <p>Something went wrong, please check the errors below.</p>
@@ -17,7 +17,7 @@
 
     <div class="mt-4 flex flex-row justify-between items-center">
       <%= link "Forgot your password?", to: Routes.pow_reset_password_reset_password_path(@conn, :new), class: "text-sm underline" %>
-      <%= submit "Login", class: "px-4 py-3 text-lg font-medium text-white bg-[#0000dd] rounded" %>
+      <%= submit "Log in", class: "px-4 py-3 text-lg font-medium text-white bg-[#0000dd] rounded" %>
     </div>
   <% end %>
 </div>

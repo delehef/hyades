@@ -21,7 +21,7 @@
   <div class="flex justify-center items-center mt-8">
     <%= link "See a sample", to: Routes.page_path(@conn, :sample), class: "font-bold underline" %>
     <span class="mx-4 font-light">or</span>
-    <%= link "Signup", to: Routes.pow_registration_path(@conn, :new), class: "px-4 py-3 my-8 block text-lg font-medium text-white bg-[#0000dd] rounded" %>
+    <%= link "Sign up", to: Routes.pow_registration_path(@conn, :new), class: "px-4 py-3 my-8 block text-lg font-medium text-white bg-[#0000dd] rounded" %>
   </div>
 
 </div>

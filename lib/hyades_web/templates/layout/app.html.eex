@@ -24,8 +24,8 @@
             <%= link "Logout", to: Routes.pow_session_path(@conn, :delete), method: :delete, class: "text-lg underline pr-4 text-red-500" %>
           <% else %>
             <%= link "Pricing", to: Routes.page_path(@conn, :pricing), class: "text-lg underline pr-4" %>
-            <%= link "Login", to: Routes.pow_session_path(@conn, :new), class: "text-lg underline pr-4" %>
-            <%= link "Signup", to: Routes.pow_registration_path(@conn, :new), class: "text-lg underline" %>
+            <%= link "Log in", to: Routes.pow_session_path(@conn, :new), class: "text-lg underline pr-4" %>
+            <%= link "Sign up", to: Routes.pow_registration_path(@conn, :new), class: "text-lg underline" %>
           <% end %>
         </div>
       </header>
