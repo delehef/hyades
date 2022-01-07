@@ -1,12 +1,12 @@
 <div class="bg-[#010e75]">
   <div class="container max-w-screen-md mx-auto">
-    <h1 class="text-4xl md:text-6xl font-bold text-white pt-8 md:pt-16 pb-12">News from the Github projects you like, straight into your inbox.</h1>
+    <h1 class="text-4xl md:text-5xl font-bold text-white pt-8 md:pt-16 pb-12">News from the Github projects you like, straight into your inbox.</h1>
   </div>
 </div>
 
 <div class="relative">
   <div class="absolute w-full h-1/2 bg-[#010e75]"></div>
-  <div class="relative z-1 container mx-auto max-w-screen-md">
+  <div class="relative z-1 container mx-auto max-w-screen-md hover:rotate-2 hover:scale-105 transition-transform duration-75">
     <a href="<%= Routes.page_path(@conn, :sample) %>"><img class="mx-auto shadow-[5px_5px_#444]" src="<%= Routes.static_path(@conn, "/images/sshot.png") %>"></a>
   </div>
 </div>

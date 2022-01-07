@@ -40,7 +40,7 @@
         <%= link "Contact", to: Routes.page_path(@conn, :contact), class: "underline pr-4 my-2" %>
         <%= link "Legal notices", to: Routes.page_path(@conn, :legal_notices), class: "underline pr-4 my-2" %>
         <%= link "Terms & Conditions", to: Routes.page_path(@conn, :conditions), class: "underline pr-4 my-2" %>
-        <div class="grow pr-4 md:text-right my-2 text-slate-400">© 2020-2022 Hyades</div>
+        <div class="grow pr-4 md:text-right my-2 text-slate-400">© 2022 Hyades</div>
       </footer>
     </div>
   </body>

@@ -1,7 +1,7 @@
 <div class="container mx-auto max-w-screen-md">
   <h1 class="text-4xl my-8 font-bold">Sample Newsletter</h1>
   <p>Here is a sampel of the newsletter that Hyades will send you every Monday. It will keep you up to date to the activity on the Github repos you starred, without cluttering your Github notifications stream.</p>
-  <div class="p-4 mt-8 border border-solid border-black shadow-[5px_5px_#444] text-sm overflow-auto" style="max-height: 60vh;">
+  <div class="bg-white p-4 mt-8 border border-solid border-black shadow-[5px_5px_#444] text-sm overflow-auto" style="max-height: 60vh;">
 
       <style>
        body {
