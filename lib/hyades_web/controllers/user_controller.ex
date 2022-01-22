@@ -28,11 +28,11 @@ defmodule HyadesWeb.UserController do
     user = current_user(conn)
 
     cond do
-      # user && !user.github_done ->
-      #   redirect(conn, to: Routes.user_path(conn, :github_register))
+      user && !user.github_done ->
+        redirect(conn, to: Routes.user_path(conn, :github_register))
 
-      # user && user.github_done ->
-      #   redirect(conn, to: Routes.pow_registration_path(conn, :edit))
+      user && user.github_done ->
+        redirect(conn, to: Routes.pow_registration_path(conn, :edit))
 
       user ->
         redirect(conn, to: Routes.pow_registration_path(conn, :edit))
@@ -80,11 +80,12 @@ defmodule HyadesWeb.UserController do
       with {:ok, %HTTPoison.Response{status_code: 200, body: body}} <-
              HTTPoison.post(github_token_url, "", headers, options),
            {:ok, %{"access_token" => token}} <- Jason.decode(body),
-           {:ok, new_user} <- Users.validate_github(user, token) do
+           {:ok, user} <- Users.register_stripe(user),
+           {:ok, user} <- Users.validate_github(user, token) do
         Hyades.Users.send_new_newsletter(user, token)
 
         conn
-        |> sync_user(new_user)
+        |> sync_user(user)
         |> put_flash(
           :info,
           "Your subscription has been successful. Your first newsletter will soon arrive!"

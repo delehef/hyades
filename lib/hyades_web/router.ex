@@ -2,12 +2,20 @@ defmodule HyadesWeb.Router do
   use HyadesWeb, :router
   use Pow.Phoenix.Router
   use Pow.Extension.Phoenix.Router, extensions: [PowResetPassword]
+  use PowAssent.Phoenix.Router
 
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_flash
     plug :protect_from_forgery
+    plug :put_secure_browser_headers
+  end
+
+  pipeline :skip_csrf_protection do
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_flash
     plug :put_secure_browser_headers
   end
 
@@ -31,7 +39,15 @@ defmodule HyadesWeb.Router do
     pipe_through :browser
     pow_routes()
     pow_extension_routes()
+    pow_assent_routes()
   end
+
+   scope "/" do
+    pipe_through :skip_csrf_protection
+
+    pow_assent_authorization_post_callback_routes()
+  end
+
 
   scope "/", HyadesWeb do
     pipe_through :browser
@@ -52,11 +68,12 @@ defmodule HyadesWeb.Router do
     get "/last", UserController, :last_newsletter
     get "/billing", UserController, :billing
     delete "/delete", UserController, :delete
-    # Github integration
-    scope "/github" do
-       get "/authorize", UserController, :github_register
-       get "/back", UserController, :github_back
-     end
+  end
+  # Github integration
+  scope "/auth/", HyadesWeb do
+    pipe_through [:browser, :protected]
+    get "/github_authorize", UserController, :github_register
+    get "/github_back", UserController, :github_back
   end
 
   scope "/", HyadesWeb do

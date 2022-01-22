@@ -1,6 +1,6 @@
 defmodule HyadesWeb.Pow.Messages do
   use Pow.Phoenix.Messages
-  use Pow.Extension.Phoenix.Messages, extensions: [PowResetPassword]
+  use Pow.Extension.Phoenix.Messages, extensions: [PowResetPassword, PowAssent]
 
   ##
   ## Pow

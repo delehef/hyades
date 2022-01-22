@@ -100,7 +100,14 @@ config :hyades,
 
 # Get these from your Github app settings
 config :hyades,
-  github_client_id: "b21ced57766a5270e4a5",
-  github_client_secret: "8fd0d89f5d58d9f5632cc140121b828b7fcc7844",
-  app_id: 74313,
-  pem_key: File.read!("hyades-info.2020-07-25.private-key.pem")
+  github_client_id: "263a0b16a7854f1d3d80",
+  github_client_secret: "88c888eb1fcc469261664b94d4bb81b392d36567"
+
+config :hyades, :pow_assent,
+  providers: [
+    github: [
+      client_id: "263a0b16a7854f1d3d80",
+      client_secret: "88c888eb1fcc469261664b94d4bb81b392d36567",
+      strategy: Assent.Strategy.Github
+    ]
+  ]

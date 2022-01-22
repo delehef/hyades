@@ -48,6 +48,7 @@ defmodule Hyades.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:pow, "~> 1.0"},
+      {:pow_assent, "~> 0.4"},
       {:bamboo, "~> 2.0"},
       {:bamboo_phoenix, "~> 1.0"},
       {:stripity_stripe, "~> 2.0"},

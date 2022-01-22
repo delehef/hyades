@@ -3,9 +3,9 @@ defmodule Hyades.Users.Mailer do
 end
 
 defmodule Hyades.Users do
+  import Ecto.Query
   import Bamboo.Email
   import Bamboo.Phoenix
-  import Ecto.Query
   use Bamboo.Phoenix, view: HyadesWeb.EmailView
 
   require Logger
@@ -14,34 +14,26 @@ defmodule Hyades.Users do
     repo: Hyades.Repo,
     user: Hyades.Users.User
 
-  @impl true
-  def create(params) do
-    case pow_create(params) do
-      {:ok, user} ->
-        register_stripe(user)
-
-      {:error, e} ->
-        Logger.error("Unable to register #{params["email"]} -- #{inspect(e, pretty: true)}")
-        {:error, e}
-    end
-  end
-
   def register_stripe(user) do
-    with {:ok, customer} <- Stripe.Customer.create(%{email: user.email}),
-         {:ok, _subscription} <-
-           Stripe.Subscription.create(%{
-             customer: customer,
-             items: [%{price: Application.get_env(:hyades, :yearly_price)}],
-             trial_period_days: Application.get_env(:hyades, :trial_length)
-           }),
-         {:ok, user} <-
-           Ecto.Changeset.change(user, customer_id: customer.id) |> Hyades.Repo.update() do
-      {:ok, user}
-    else
-      {:error, e} ->
-        Logger.error("unable to register #{}: #{inspect(e, pretty: true)}")
+    if user.customer_id == "" do
+      with {:ok, customer} <- Stripe.Customer.create(%{email: user.email}),
+           {:ok, _subscription} <-
+      Stripe.Subscription.create(%{
+            customer: customer,
+            items: [%{price: Application.get_env(:hyades, :yearly_price)}],
+            trial_period_days: Application.get_env(:hyades, :trial_length)
+                                 }),
+      {:ok, user} <-
+      Ecto.Changeset.change(user, customer_id: customer.id) |> Hyades.Repo.update() do
+        {:ok, user}
+      else
+        {:error, e} ->
+          Logger.error("unable to register #{}: #{inspect(e, pretty: true)}")
         Hyades.Repo.delete(user)
         {:error, "Unable to create a Stripe customer"}
+      end
+    else
+      {:ok, user}
     end
   end
 
