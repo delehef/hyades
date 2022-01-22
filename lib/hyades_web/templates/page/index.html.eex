@@ -6,7 +6,7 @@
 
 <div class="relative">
   <div class="absolute w-full h-1/2 bg-[#010e75]"></div>
-  <div class="relative z-1 container mx-auto max-w-screen-md hover:rotate-2 hover:scale-105 transition-transform duration-75">
+  <div class="relative z-1 container mx-auto max-w-screen-md transition-transform duration-75">
     <a href="<%= Routes.page_path(@conn, :sample) %>"><img class="mx-auto shadow-[5px_5px_#444]" src="<%= Routes.static_path(@conn, "/images/sshot.png") %>"></a>
   </div>
 </div>

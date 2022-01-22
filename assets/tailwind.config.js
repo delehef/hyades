@@ -1,5 +1,7 @@
 // See the Tailwind configuration guide for advanced usage
 // https://tailwindcss.com/docs/configuration
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 module.exports = {
   content: [
     './js/**/*.js',
@@ -10,6 +12,9 @@ module.exports = {
       container: {
           center: true,
           padding: "2rem",
+      },
+      fontFamily: {
+          sans: ['Inter var', ...defaultTheme.fontFamily.sans],
       }
   },
   plugins: [
