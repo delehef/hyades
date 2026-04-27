@@ -40,3 +40,15 @@ config/prod.secret.exs
 package-lock.json
 Mnesia.*
 .envrc
+.env
+
+# Devenv
+.devenv*
+devenv.local.nix
+devenv.local.yaml
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml

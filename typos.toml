@@ -1,0 +1,6 @@
+[files]
+extend-exclude = ["*.nix"]
+
+[default]
+check-filename = true
+extend-identifiers = {"nd" = "nd"}

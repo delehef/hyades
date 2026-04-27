@@ -2,16 +2,10 @@ import Config
 
 # Configure your database
 config :hyades, Hyades.Repo,
-  ## For TCP connection
-  # hostname: "localhost",
-  # username: "postgres",
-  # password: "password",
-
-  ## For UNIX socket connection
-  # socket_dir: "/var/run/postgresql",
-  # username: "someone",
-
-  database: "hyades",
+  username: "hyades",
+  password: "hyadespwd",
+  hostname: "localhost",
+  database: "hyades_dev",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
@@ -30,7 +24,6 @@ config :hyades, HyadesWeb.Endpoint,
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
     tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}
   ]
-
 
 # ## SSL Support
 #
@@ -78,7 +71,7 @@ config :phoenix, :stacktrace_depth, 20
 config :phoenix, :plug_init_mode, :runtime
 
 config :stripity_stripe,
-  api_key: "sk_test_51H8rKNLSkre068ylZgcJiXXMGcYfyZyZZjPlcnFpObrlY08PZQsiFT8g2UnzXruoNm1vEujDUAaQ8qiAXwRkHz9U00fDHr2zHF"
+  api_key: System.get_env("STRIPE_API_KEY") || raise("STRIPE_API_KEY missing")
 
 config :hyades, HyadesWeb.Pow.Mailer,
   adapter: Bamboo.LocalAdapter,
@@ -93,21 +86,24 @@ config :hyades, Hyades.Github.Mailer,
   open_email_in_browser_url: "http://localhost:4000/sent_emails"
 
 config :hyades,
-  stripe_api_secret_key: "whsec_nsDSBg5hfjvjPdlI1y6PpsW0yNGMI9v5",
-  stripe_public_key: "pk_test_51H8rKNLSkre068ylISeCpIVHjsAfRCTKWWjAth4hIjReUjlWEFbY84bCIYRWkrgE3w6N8HiGpXcXgCZ8PQffhEWU00KJllnBVM",
-  yearly_price: "price_1HA0NQLSkre068ylbCqOVEs8",
+  stripe_api_secret_key:
+    System.get_env("STRIPE_API_SECRET_KEY") || raise("STRIPE_API_SECRET_KEY missing"),
+  stripe_public_key: System.get_env("STRIPE_PUBLIC_KEY") || raise("STRIPE_PUBLIC_KEY missing"),
+  yearly_price: System.get_env("STRIPE_YEARLY_PRICE") || raise("STRIPE_YEARLY_PRICE missing"),
   trial_length: 1
 
 # Get these from your Github app settings
 config :hyades,
-  github_client_id: "263a0b16a7854f1d3d80",
-  github_client_secret: "88c888eb1fcc469261664b94d4bb81b392d36567"
+  github_client_id: System.get_env("GITHUB_CLIENT_ID") || raise("GITHUB_CLIENT_ID missing"),
+  github_client_secret:
+    System.get_env("GITHUB_CLIENT_SECRET") || raise("GITHUB_CLIENT_SECRET missing")
 
 config :hyades, :pow_assent,
   providers: [
     github: [
-      client_id: "263a0b16a7854f1d3d80",
-      client_secret: "88c888eb1fcc469261664b94d4bb81b392d36567",
+      client_id: System.get_env("GITHUB_CLIENT_ID") || raise("GITHUB_CLIENT_ID missing"),
+      client_secret:
+        System.get_env("GITHUB_CLIENT_SECRET") || raise("GITHUB_CLIENT_SECRET missing"),
       strategy: Assent.Strategy.Github
     ]
   ]
