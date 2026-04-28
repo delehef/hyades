@@ -1,43 +1,31 @@
 defmodule HyadesWeb do
-  @moduledoc """
-  The entrypoint for defining your web interface, such
-  as controllers, views, channels and so on.
-
-  This can be used in your application as:
-
-      use HyadesWeb, :controller
-      use HyadesWeb, :view
-
-  The definitions below will be executed for every view,
-  controller, etc, so keep them short and clean, focused
-  on imports, uses and aliases.
-
-  Do NOT define functions inside the quoted expressions
-  below. Instead, define any helper function in modules
-  and import those modules here.
-  """
-
   def controller do
     quote do
-      use Phoenix.Controller, namespace: HyadesWeb
+      use Phoenix.Controller,
+        formats: [:html, :json],
+        layouts: [html: HyadesWeb.Layouts]
 
       import Plug.Conn
-      import HyadesWeb.Gettext
-      alias HyadesWeb.Router.Helpers, as: Routes
+      use Gettext, backend: HyadesWeb.Gettext
+
+      unquote(verified_routes())
     end
   end
 
-  def view do
+  def live_view do
     quote do
-      use Phoenix.View,
-        root: "lib/hyades_web/templates",
-        namespace: HyadesWeb
+      use Phoenix.LiveView,
+        layout: {HyadesWeb.Layouts, :app}
 
-      # Import convenience functions from controllers
-      import Phoenix.Controller, only: [get_flash: 1, get_flash: 2, view_module: 1]
+      unquote(html_helpers())
+    end
+  end
 
-      # Include shared imports and aliases for views
-      unquote(view_helpers())
+  def live_component do
+    quote do
+      use Phoenix.LiveComponent
+
+      unquote(html_helpers())
     end
   end
 
@@ -53,21 +41,7 @@ defmodule HyadesWeb do
   def channel do
     quote do
       use Phoenix.Channel
-      import HyadesWeb.Gettext
-    end
-  end
-
-  defp view_helpers do
-    quote do
-      # Use all HTML functionality (forms, tags, etc)
-      use Phoenix.HTML
-
-      # Import basic rendering functionality (render, render_layout, etc)
-      import Phoenix.View
-
-      import HyadesWeb.ErrorHelpers
-      import HyadesWeb.Gettext
-      alias HyadesWeb.Router.Helpers, as: Routes
+      use Gettext, backend: HyadesWeb.Gettext
     end
   end
 
@@ -77,6 +51,47 @@ defmodule HyadesWeb do
       use Phoenix.HTML
     end
   end
+
+  def html do
+    quote do
+      use Phoenix.Component
+      # Import convenience functions from controllers
+
+      import Phoenix.Controller,
+        only: [get_csrf_token: 0, view_module: 1, view_template: 1]
+
+      # Include general helpers for rendering HTML
+      unquote(html_helpers())
+    end
+  end
+
+  defp html_helpers do
+    quote do
+      # HTML escaping functionality
+      import Phoenix.HTML
+
+      # Core UI components and translation
+      import HyadesWeb.CoreComponents
+      use Gettext, backend: HyadesWeb.Gettext
+
+      # Shortcut for generating JS commands
+      alias Phoenix.LiveView.JS
+
+      # Routes generation with the ~p sigil
+      unquote(verified_routes())
+    end
+  end
+
+  def verified_routes do
+    quote do
+      use Phoenix.VerifiedRoutes,
+        endpoint: HyadesWeb.Endpoint,
+        router: HyadesWeb.Router,
+        statics: HyadesWeb.static_paths()
+    end
+  end
+
+  def static_paths, do: ~w(assets fonts images favicon.ico robots.txt)
 
   @doc """
   When used, dispatch to the appropriate controller/view/etc.

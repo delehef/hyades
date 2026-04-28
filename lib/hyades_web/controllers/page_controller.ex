@@ -1,16 +1,7 @@
 defmodule HyadesWeb.PageController do
   use HyadesWeb, :controller
 
-  import Pow.Plug
-
-  def index(conn, _params) do
-    if current_user(conn) do
-      redirect(conn, to: Routes.user_path(conn, :landing))
-    else
-      render(conn, "index.html")
-    end
-  end
-
+  def index(conn, _params), do: render(conn, "index.html")
   def sample(conn, _), do: render(conn, "sample.html")
   def pricing(conn, _), do: render(conn, "pricing.html")
   def contact(conn, _), do: render(conn, "contact.html")

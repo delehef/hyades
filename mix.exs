@@ -4,13 +4,14 @@ defmodule Hyades.MixProject do
   def project do
     [
       app: :hyades,
-      version: "0.1.0",
-      elixir: "~> 1.7",
+      version: "1.0.0",
+      elixir: "~> 1.15",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      compilers: [:phoenix_live_view] ++ Mix.compilers(),
+      listeners: [Phoenix.CodeReloader]
     ]
   end
 
@@ -20,7 +21,7 @@ defmodule Hyades.MixProject do
   def application do
     [
       mod: {Hyades.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :os_mon]
     ]
   end
 
@@ -33,32 +34,35 @@ defmodule Hyades.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.6"},
-      {:phoenix_ecto, "~> 4.1"},
-      {:ecto_sql, "~> 3.4"},
+      {:bcrypt_elixir, "~> 3.0"},
+      {:phoenix, "~> 1.8"},
+      {:phoenix_ecto, "~> 4.5"},
+      {:ecto_sql, "~> 3.12"},
       {:postgrex, ">= 0.0.0"},
-      {:phoenix_html, "~> 3.0"},
+      {:phoenix_html, "~> 4.1"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_dashboard, "~> 0.5"},
-      {:telemetry_metrics, "~> 0.6"},
+      {:phoenix_live_dashboard, "~> 0.8.3"},
+      {:phoenix_view, "~> 2.0"},
+      {:phoenix_html_helpers, "~> 1.0"},
+      {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},
-      {:gettext, "~> 0.11"},
-      {:esbuild, "~> 0.2", runtime: Mix.env() == :dev},
-      {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
-      {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:pow, "~> 1.0"},
-      {:pow_assent, "~> 0.4"},
+      {:plug, "~> 1.7"},
+      {:gettext, "~> 1.0"},
+      {:esbuild, "~> 0.10", runtime: Mix.env() == :dev},
+      {:tailwind, "~> 0.4", runtime: Mix.env() == :dev},
+      {:jason, "~> 1.1"},
+      {:ueberauth_github, "~> 0.8"},
       {:bamboo, "~> 2.0"},
       {:bamboo_phoenix, "~> 1.0"},
       {:stripity_stripe, "~> 2.0"},
       {:joken, "~> 2.0"},
-      {:httpoison, "~> 1.0"},
+      {:httpoison, "~> 2.0"},
       {:neuron, "~> 5.0"},
       {:tentacat, "~> 2.0"},
       {:earmark, "~> 1.0"},
       {:quantum, "~> 3.0"},
-      {:credo, "~> 1.4", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
     ]
   end
 

@@ -7,6 +7,17 @@
 # General application configuration
 import Config
 
+config :hyades, :scopes,
+  user: [
+    default: true,
+    module: Hyades.Users.Scope,
+    assign_key: :current_scope,
+    access_path: [:user, :id],
+    schema_key: :user_id,
+    schema_type: :id,
+    schema_table: :users
+  ]
+
 config :esbuild,
   version: "0.14.9",
   default: [
@@ -16,28 +27,17 @@ config :esbuild,
   ]
 
 config :tailwind,
-  version: "3.0.7",
+  version: "4.2.2",
   default: [
     args: ~w(
-      --config=tailwind.config.js
-      --input=css/app.scss
-      --output=../priv/static/assets/app.css
-      --postcss
-    ),
-    cd: Path.expand("../assets", __DIR__)
+      --input=assets/css/app.scss
+      --output=priv/static/assets/app.css
+         ),
+    cd: Path.expand("../", __DIR__)
   ]
-
 
 config :hyades,
   ecto_repos: [Hyades.Repo]
-
-# Configures the endpoint
-config :hyades, HyadesWeb.Endpoint,
-  url: [host: "localhost"],
-  secret_key_base: "vunk92g1sfoVjMiL5BlBWvjXM1A8+Y0UtJ7qwZmyv58WQm6YWmay5G1jGeQQzXyC",
-  render_errors: [view: HyadesWeb.ErrorView, accepts: ~w(html json), layout: false],
-  pubsub_server: Hyades.PubSub,
-  live_view: [signing_salt: "bWE18m54"]
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -47,17 +47,13 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-config :hyades, :pow,
-  user: Hyades.Users.User,
-  users_context: Hyades.Users,
-  repo: Hyades.Repo,
-  web_module: HyadesWeb,
-  mailer_backend: HyadesWeb.Pow.Mailer,
-  extensions: [PowResetPassword],
-  controller_callbacks: Pow.Extension.Phoenix.ControllerCallbacks,
-  routes_backend: HyadesWeb.Pow.Routes,
-  web_mailer_module: HyadesWeb,
-  messages_backend: HyadesWeb.Pow.Messages
+config :ueberauth, Ueberauth,
+  providers: [
+    github:
+      {Ueberauth.Strategy.Github,
+       [default_scope: "user:email", send_redirect_uri: false, allow_private_emails: true]}
+  ],
+  base_path: "/auth"
 
 config :hyades, Hyades.Cron,
   jobs: [

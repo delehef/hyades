@@ -1,0 +1,46 @@
+<%= if Enum.empty? @repos do %>
+  <h2>You currently have no starred repos.</h2>
+<% else %>
+  <%= for repo <- @repos do %>
+    <h1><a href="<%= repo.url %>"><%= repo.name %></a></h1>
+    <%= unless Enum.empty? repo.releases do %>
+      <h2>New releases</h2>
+      <ul>
+        <%= for release <- repo.releases do %>
+          <li class="release">
+            <a class="release" href="<%= release.url %>"><%= if release.name != "", do: release.name, else: release.tag_name %></a>
+            <p><%= raw release.body %></p>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <%= unless Enum.empty? repo.issues do %>
+      <h2>Issues & Pull Requests</h2>
+      <ul>
+        <%= for issue <- repo.issues do %>
+          <li class="issue" style="<%= if issue.body != "", do: "margin-bottom: 2rem; padding-left: 1rem; border-left: 1px solid #10b981" %>">
+            <a class="issue" href="<%= issue.url %>"><%= issue.title %></a>
+            <%= for label <- issue.labels do %>
+              <span class="label" style="padding: 0em 0.1em; font-weight: bold; color: aliceblue; background-color: #<%= label.color %>;"><%= label.name %></span>
+            <% end %>
+            <p><%= raw issue.body %></p>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <%= unless Enum.empty? repo.commits do %>
+      <h2>Commits</h2>
+      <ul>
+        <%= for commit <- repo.commits do %>
+          <li class="commit">
+            <a class="commit" href="<%= commit.url %>"><%= commit.message %></a>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  <% end %>
+<% end %>
+
+<a id="account" href="https://hyades.info/u/settings">My account</a>

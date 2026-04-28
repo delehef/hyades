@@ -1,28 +1,20 @@
 defmodule Hyades.Users.User do
   use Ecto.Schema
-  use Pow.Ecto.Schema
-  use PowAssent.Ecto.Schema
-
-  use Pow.Extension.Ecto.Schema,
-    extensions: [PowResetPassword]
 
   import Ecto.Changeset
 
   schema "users" do
-    pow_user_fields()
+    field(:email, :string)
+    field(:authenticated_at, :naive_datetime, virtual: true)
+
     field(:subscribed, :boolean, default: true)
-
-    field(:customer_id, :string, default: "")
+    field(:stripe_customer_id, :string, default: "")
     field(:github_token, :string, default: "")
-
-    field(:github_done, :boolean, default: false)
 
     field(:show_releases, :boolean, default: true)
     field(:show_releases_body, :boolean, default: true)
-
     field(:show_issues, :boolean, default: true)
     field(:show_issues_body, :boolean, default: false)
-
     field(:show_commits, :boolean, default: false)
 
     timestamps()
@@ -30,16 +22,24 @@ defmodule Hyades.Users.User do
 
   def changeset(user, attrs \\ %{}) do
     user
-    |> pow_changeset(attrs)
-    |> pow_extension_changeset(attrs)
-    |> validate_format(:email, ~r/@/)
-    |> validate_length(:email, max: 500)
     |> cast(attrs, [
+      :email,
+      :authenticated_at,
+      :subscribed,
+      :stripe_customer_id,
+      :github_token,
       :show_releases,
       :show_releases_body,
       :show_issues,
       :show_issues_body,
       :show_commits
     ])
+    |> validate_required([:email])
+    |> validate_format(:email, ~r/^[^@,;\s]+@[^@,;\s]+$/,
+      message: "must have the @ sign and no spaces"
+    )
+    |> validate_length(:email, max: 160)
+    |> unsafe_validate_unique(:email, Hyades.Repo)
+    |> unique_constraint(:email)
   end
 end

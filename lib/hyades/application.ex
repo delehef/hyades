@@ -17,8 +17,7 @@ defmodule Hyades.Application do
       HyadesWeb.Endpoint,
       # Start a worker by calling: Hyades.Worker.start_link(arg)
       # {Hyades.Worker, arg}
-      Hyades.Cron,
-      Pow.Store.Backend.MnesiaCache
+      Hyades.Cron
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

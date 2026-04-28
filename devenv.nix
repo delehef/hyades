@@ -4,10 +4,15 @@
   cachix.enable = false;
 
   # https://devenv.sh/packages/
-  packages = [ pkgs.git pkgs.nodejs pkgs.stripe-cli ];
+  packages = [ pkgs.git pkgs.nodejs pkgs.stripe-cli pkgs.inotify-tools pkgs.tailwindcss_4 pkgs.esbuild ];
   languages.elixir.enable = true;
 
   dotenv.enable = true;
+
+  enterShell = ''
+  rm _build/tailwind-linux-x64
+  ln -s ${pkgs.tailwindcss_4}/bin/tailwindcss _build/tailwind-linux-x64
+  '';
 
   services.postgres = {
     enable = true;
@@ -27,12 +32,5 @@
     mixed-line-endings.enable = true;
     ripsecrets.enable = true;
     trim-trailing-whitespace.enable = true;
-    typos = {
-      enable = true;
-      settings = {
-        write = true;
-        configPath = "typos.toml";
-      };
-    };
   };
 }

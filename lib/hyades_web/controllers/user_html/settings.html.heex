@@ -1,0 +1,12 @@
+<div class="container mx-auto max-w-screen-md">
+  <.settings_form changeset={@changeset} action={~p"/u/settings"} />
+
+  <section class="mt-12">
+    <h2 class="font-bold text-2xl">Billing</h2>
+    <.link href={~p"/u/billing"} class="block underline mt-4">View my subscription</.link>
+    <.link href={~p"/u/delete"} method="delete" class="block underline text-red-500 mt-4" onclick="return confirm('This will cancel your subscription and definitely remove your account. Are you sure?')">Delete my account</.link>
+    <%= if Enum.member?(["f@f.fr", "franklin@odena.eu"], @conn.assigns.current_scope.user.email) do %>
+    <.link href={~p"/u/last"} class="block underline mt-4 text-emerald-500">Last newsletter</.link>
+    <% end %>
+  </section>
+</div>

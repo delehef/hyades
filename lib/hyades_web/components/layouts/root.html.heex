@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="csrf-token" content={get_csrf_token()} />
+    <meta property="og:image" content={~p"/images/thumbnail.png"}/>
+    <title>Hyades</title>
+    <link rel="icon" type="image/png" sizes="96x96" href={~p"/images/favicon.png"}/>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css"/>
+    <link rel="stylesheet" href={~p"/assets/app.css"}/>
+    <script defer type="text/javascript" src={~p"/assets/app.js"}></script>
+  </head>
+  <body class="font-sans bg-[#eee]">
+    <div class="flex flex-col min-h-screen">
+      <header class="bg-[#010e75]">
+        <div class={"container mx-auto max-w-screen-md py-4 flex flex-row items-center font-bold text-white"}>
+          <h1 class="sm:hidden block grow text-4xl font-bold tracking-wider bg-gradient-to-br bg-clip-text from-emerald-500 to-sky-600 text-transparent"><a href="/">H</a></h1>
+          <h1 class="hidden sm:block grow text-4xl font-bold tracking-wider bg-gradient-to-br bg-clip-text from-emerald-500 to-sky-600 text-transparent"><a href="/">HYADES</a></h1>
+          <%= if @current_scope do %>
+          <span class="font-mono pr-4 text-sm font-normal">{@current_scope.user.email}</span>
+          <.link href={~p"/u/settings"} class="text-lg underline pr-4">Settings</.link>
+          <.link href={~p"/u"} method="delete" class="text-lg underline pr-4 text-rose-400">Log out</.link>
+          <% else %>
+          <.link href={~p"/pricing"} class="text-lg underline pr-4">Pricing</.link>
+          <.link href={~p"/auth/github"} class="text-lg underline pr-4">Log in/Sign up</.link>
+          <% end %>
+        </div>
+      </header>
+      {@inner_content}
+      <footer class="mt-auto container mx-auto max-w-screen-md flex sm:flex-row flex-col sm:items-center text-slate-600 py-8">
+        <.link href={~p"/contact"} class="underline pr-4 my-2">Contact</.link>
+        <.link href={~p"/legal_notices"} class="underline pr-4 my-2">Legal notices</.link>
+        <.link href={~p"/conditions"} class="underline pr-4 my-2">Terms & Conditions</.link>
+        <div class="grow pr-4 md:text-right my-2 text-slate-400">© 2022 Hyades</div>
+      </footer>
+    </div>
+  </body>
+</html>

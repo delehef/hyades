@@ -9,7 +9,7 @@ defmodule Hyades.Github.Email do
   defp base_email() do
     new_email()
     |> from("Hyades<no-reply@hyades.info>")
-    |> put_html_layout({HyadesWeb.LayoutView, "email.html"})
+    |> put_html_layout({HyadesWeb.EmailView, "email.html"})
   end
 
   def newsletter(repos, to_whom) do

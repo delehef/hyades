@@ -33,8 +33,6 @@ npm-debug.log
 # this depending on your deployment strategy.
 /priv/static/assets/
 
-mix.lock
-
 config/dev.local.exs
 config/prod.secret.exs
 package-lock.json
@@ -52,3 +50,4 @@ devenv.local.yaml
 
 # pre-commit
 .pre-commit-config.yaml
+priv/static

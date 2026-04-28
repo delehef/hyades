@@ -1,0 +1,20 @@
+<.form :let={f} for={@changeset} action={@action}>
+  <div class="flex flex-col gap-2 py-4">
+    <.input field={f[:email]} type="email" label="Email" />
+
+    <h3 class="font-bold text-xl mt-4">Releases</h3>
+    <.input field={f[:show_releases]} type="checkbox" label="Show new releases" />
+    <.input field={f[:show_releases_body]} type="checkbox" label="Show new release details" />
+
+    <h3 class="font-bold text-xl mt-4">Issues</h3>
+    <.input field={f[:show_issues]} type="checkbox" label="Show active issues" />
+    <.input field={f[:show_issues_body]} type="checkbox" label="Show active issue details" />
+
+    <h3 class="font-bold text-xl mt-4">Commits</h3>
+    <.input field={f[:show_commits]} type="checkbox" label="Show new commits" />
+
+  </div>
+  <footer>
+    <.button>Save</.button>
+  </footer>
+</.form>
